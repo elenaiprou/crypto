@@ -1,0 +1,1 @@
+DATABASE = 'ruta de la base de datos'
