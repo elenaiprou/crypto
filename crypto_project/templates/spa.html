@@ -56,7 +56,7 @@
                 <div class="row">
                     <div class="column column-33">
                         <label for="to_moneda">A moneda</label>
-                        <select name="categoria" id="categoria">
+                        <select name="categoria" id="cambio">
                             <option value="">Elije moneda de cambio</option>
                             <option value="EUR">Euros</option>
                             <option value="ETH">Ethereum</option>
@@ -64,14 +64,21 @@
                         </select>
                     </div>
                     <div class="column column-33">
-                        <label for="to_cantidad">Cantidad</label>
-                        <input type="number" name="cantidad" id="to_cantidad" step="any">
+                        <label for="to_cantidad">Cambio</label>
+                        <input type="number" name="precio" id="precio" step="any">
+                    </div>
+                    <div class="column column-33">
+                        <label for="precio unitario"> Precio unitaro</label>
+                        <input type="number" name="unitario" id="unitario" step="any">
                     </div>
                 </div>
                 <div class="row">
                     <div class="column">
-                        <button class= "float-right" id="crear">Realizar</button>
-                        <a href="">Cancelar</a>
+                        <button id="calcular">Calcular</button>
+                        <button class= "float-right" id="realizar">Realizar</button>
+                        <div>
+                            <a href="">Cancelar</a>
+                        </div>
                     </div>
                 </div>
             </form>

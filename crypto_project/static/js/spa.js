@@ -93,14 +93,10 @@ function llamaApiMovimientos() {
 function capturaFormMovimiento() {
     const movimiento = {}
     movimiento.fecha = document.querySelector("#fecha").value
-    movimiento.concepto = document.querySelector("#concepto").value
-    movimiento.categoria = document.querySelector("#categoria").value
-    movimiento.cantidad = document.querySelector("#cantidad").value
-    if (document.querySelector("#gasto").checked) {
-        movimiento.esGasto = 1
-    } else {
-        movimiento.esGasto = 0
-    }
+    movimiento.from_moneda = document.querySelector("#categoria").value
+    movimiento.from_cantidad = document.querySelector("#from_cantidad").value
+    movimiento.to_moneda = document.querySelector("#cambio").value
+    movimiento.to_cantidad = document.querySelector("#precio").value
     return movimiento
 }
 
@@ -138,105 +134,25 @@ function validar(movimiento) {
     return true
 }
 
-/*
-function llamaApiModificaMovimiento(ev) {
-    ev.preventDefault()
-    id = document.querySelector("#idMovimiento").value
-    if (!id) {
-        alert("Selecciona un movimiento antes!")
-        return
-    }
-
-    const movimiento = capturaFormMovimiento ()
-    if (!validar(movimiento)) {
-        return
-    }
-
-    xhr.open("PUT", `http://localhost:5000/api/v1/movimiento/${id}`, true)
-    xhr.onload = recibeRespuesta
-
-    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
-
-    xhr.send(JSON.stringify(movimiento))
-}
-
-function llamaApiBorraMovimiento(ev) {
-    ev.preventDefault()
-    id = document.querySelector("#idMovimiento").value
-    if (!id) {
-        alert("Selecciona un movimiento antes!")
-        return
-    }
-
-    xhr.open("DELETE", `http://localhost:5000/api/v1/movimiento/${id}`, true)
-    xhr.onload = recibeRespuesta
+function llamaApiCoinmarket(evento) { //por ahora tengo que baserme en esto 
+    evento.preventDefault()
+    const movimiento = {}
+    movimiento.moneda_from = document.querySelector("#moneda_from").value
+    movimiento.cantidad_from = document.querySelector("#cantidad_from").value
+    movimiento.moneda_to = document.querySelector("#moneda_to").value
+    xhr.open("GET", `http://localhost:5000/api/v1/par/${movimiento.moneda_from}/${movimiento.moneda_to}/${movimiento.cantidad_from}`, true)
+    xhr.onload = recibeRespuestaCoinmarket //me falta esta funcion 
     xhr.send()
-}
-*/
-
-
-function gestionaRespuestaAsincrona() {
-    if (this.readyState === 4 && this.status === 200) {
-        console.log(this.responseText)
-        const respuesta = JSON.parse(this.responseText)
-
-        if(respuesta.Response === 'False') {
-            alert("No se han encontrado resultados")
-            return
-        }
-
-        folio.innerHTML = "" //forma de resetear la pagina
-
-        for (let i=0; i < respuesta.Search.length; i++) {
-            const pelicula = respuesta.Search[i]
-
-            const div = document.createElement("div")
-            div.className = "pelicula"
-
-            const img = document.createElement("img")
-            img.setAttribute("src", pelicula.Poster)
-            img.setAttribute("alt", "Carátula de la película")
-
-            const p = document.createElement("p")
-            const textoP = `${pelicula.Title} (${pelicula.Year})`
-            p.innerHTML = textoP
-
-            const btn = document.createElement("a")
-            btn.setAttribute("href", `https://www.imdb.com/title/${pelicula.imdbID}/`)
-            btn.setAttribute("target", "_blank")
-            btn.className = "button"
-            btn.classList.add("info")
-            btn.innerHTML = "Más info..."
-
-            p.appendChild(btn)
-            
-            div.appendChild(img)
-            div.appendChild(p)
-
-
-            folio.appendChild(div)
-
-        }
-    }
+    console.log("He lanzado petición a Coin Market")
 }
 
-const xhr = new XMLHttpRequest() //lanza peticiones en forma asincrona
-xhr.onload = gestionaRespuestaAsincrona //es un metodo con una funcion que me devuelve la petición
-
-document.querySelector("#buscar")
-    .addEventListener("click", () => {
-        const palabras = document.querySelector("#entrada").value
-        xhr.open('GET', `http://www.omdbapi.com/?s=${palabras}&apikey=fa18b2e1-adbb-4d52-8173-db21b646d7f1`, true)
-        xhr.send()
-        console.log("He lanzado petición")
-    })
 
 function llamaApiCreaMovimiento(ev) {
     ev.preventDefault()
     const movimiento = capturaFormMovimiento ()
-    if (!validar(movimiento)) {
+    /*if (!validar(movimiento)) {
         return
-    }
+    }*/
 
     xhr.open("POST", `http://localhost:5000/api/v1/movimiento`, true)
     xhr.onload = recibeRespuesta
@@ -249,6 +165,6 @@ function llamaApiCreaMovimiento(ev) {
 window.onload = function() {
     llamaApiMovimientos()
     
-        document.querySelector("#Realizar")
+        document.querySelector("#realizar")
         .addEventListener("click", llamaApiCreaMovimiento)
 }

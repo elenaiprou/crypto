@@ -1,10 +1,14 @@
-from flask import render_template, jsonify, request
+from flask import render_template, jsonify, request, Response
 from crypto_project import app
 from crypto_project.dataaccess import DBmanager
 import sqlite3
 from http import HTTPStatus
+import requests
+#from crypto_project.api_key import CMC 
+
 
 dbManager = DBmanager(app.config.get('DATABASE'))
+#cmc = CMC(app.config.get('API_KEY'))
 
 @app.route('/')
 def listaMovimientos():
@@ -64,3 +68,19 @@ def detalleMovimiento(id=None):
     except sqlite3.Error as e:
         print("BBDD error:", e)
         return jsonify({"status": "fail", "mensaje": "Error en base de datos: {}".format(e)}), HTTPStatus.BAD_REQUEST
+
+
+'''
+@app.route('/api/v1/par/<quantity>/<_from>/<_to>')
+@app.route('/api/v1/par/<_from>/<_to>')
+def buscaApi():
+    return cmc.priceConversion()
+
+
+@app.route('/api/v1/par/<_from>/<_to>/<quantity>')
+@app.route('/api/v1/par/<_from>/<_to>')
+def par(_from, _to, quantity = 1.0):
+    url = f"https://pro-api.coinmarketcap.com/v1/tools/price-conversion?amount={quantity}&symbol={_from}&convert={_to}&CMC_PRO_API_KEY=fa18b2e1-adbb-4d52-8173-db21b646d7f1"
+    res = requests.get(url)
+    return Response(res)
+'''
