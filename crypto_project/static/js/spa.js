@@ -5,6 +5,7 @@ const categoria = {
 }
 
 let losMovimientos //variable global sin nada, para guardar los movimientos "pa' luego"
+// var folio = document.querySelector("#folio")
 
 xhr = new XMLHttpRequest()
 xhr.onload = muestraMovimientos
@@ -137,6 +138,7 @@ function validar(movimiento) {
     return true
 }
 
+/*
 function llamaApiModificaMovimiento(ev) {
     ev.preventDefault()
     id = document.querySelector("#idMovimiento").value
@@ -158,11 +160,6 @@ function llamaApiModificaMovimiento(ev) {
     xhr.send(JSON.stringify(movimiento))
 }
 
-/*sepuede llamar funcion así:
-const llamaApiBorraMovimiento = (ev) => {
-}
-*/
-
 function llamaApiBorraMovimiento(ev) {
     ev.preventDefault()
     id = document.querySelector("#idMovimiento").value
@@ -175,6 +172,64 @@ function llamaApiBorraMovimiento(ev) {
     xhr.onload = recibeRespuesta
     xhr.send()
 }
+*/
+
+
+function gestionaRespuestaAsincrona() {
+    if (this.readyState === 4 && this.status === 200) {
+        console.log(this.responseText)
+        const respuesta = JSON.parse(this.responseText)
+
+        if(respuesta.Response === 'False') {
+            alert("No se han encontrado resultados")
+            return
+        }
+
+        folio.innerHTML = "" //forma de resetear la pagina
+
+        for (let i=0; i < respuesta.Search.length; i++) {
+            const pelicula = respuesta.Search[i]
+
+            const div = document.createElement("div")
+            div.className = "pelicula"
+
+            const img = document.createElement("img")
+            img.setAttribute("src", pelicula.Poster)
+            img.setAttribute("alt", "Carátula de la película")
+
+            const p = document.createElement("p")
+            const textoP = `${pelicula.Title} (${pelicula.Year})`
+            p.innerHTML = textoP
+
+            const btn = document.createElement("a")
+            btn.setAttribute("href", `https://www.imdb.com/title/${pelicula.imdbID}/`)
+            btn.setAttribute("target", "_blank")
+            btn.className = "button"
+            btn.classList.add("info")
+            btn.innerHTML = "Más info..."
+
+            p.appendChild(btn)
+            
+            div.appendChild(img)
+            div.appendChild(p)
+
+
+            folio.appendChild(div)
+
+        }
+    }
+}
+
+const xhr = new XMLHttpRequest() //lanza peticiones en forma asincrona
+xhr.onload = gestionaRespuestaAsincrona //es un metodo con una funcion que me devuelve la petición
+
+document.querySelector("#buscar")
+    .addEventListener("click", () => {
+        const palabras = document.querySelector("#entrada").value
+        xhr.open('GET', `http://www.omdbapi.com/?s=${palabras}&apikey=fa18b2e1-adbb-4d52-8173-db21b646d7f1`, true)
+        xhr.send()
+        console.log("He lanzado petición")
+    })
 
 function llamaApiCreaMovimiento(ev) {
     ev.preventDefault()
@@ -193,14 +248,7 @@ function llamaApiCreaMovimiento(ev) {
 
 window.onload = function() {
     llamaApiMovimientos()
-
-    document.querySelector("#modificar")
-        .addEventListener("click", llamaApiModificaMovimiento)
     
-    document.querySelector("#borrar")
-        .addEventListener("click", llamaApiBorraMovimiento)
-    
-        document.querySelector("#crear")
+        document.querySelector("#Realizar")
         .addEventListener("click", llamaApiCreaMovimiento)
-
 }
