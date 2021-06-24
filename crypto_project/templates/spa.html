@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>myCrypto</title>
+        <link rel="stylesheet" href="/static/css/milligram.css">
+        <link rel="stylesheet" href="/static/css/styles.css">
+        <script src="/static/js/spa.js"></script>
+    </head>
+    <body>
+        <head>myCrypto</head>
+        <section class="container" id="principal">
+            <h1>Control compra de monedas</h1>
+            <div class="lista-movimientos">
+                <table class="tabla-crypto">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>De moneda</th>
+                            <th>Cantidad</th>
+                            <th>A moneda</th>
+                            <th>Cantidad</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+        <hr>
+        <div class="detail-movimiento container">
+            <form>
+                <div class="row">
+                    <input type="hidden" id="idMovimiento">
+                    <div class="column column-33">
+                        <label for="fecha">Fecha</label>
+                        <input type="date" name="fecha" id="fecha">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column column-33">
+                        <label for="from_moneda">De moneda</label>
+                        <select name="categoria" id="categoria">
+                            <option value="">Elije moneda</option>
+                            <option value="EUR">Euros</option>
+                            <option value="ETH">Ethereum</option>
+                            <option value="LTC">Litecoin</option>
+                        </select>
+                    </div>
+                    <div class="column column-33">
+                        <label for="from_cantidad">Cantidad</label>
+                        <input type="number" name="cantidad" id="from_cantidad" step="any">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column column-33">
+                        <label for="to_moneda">A moneda</label>
+                        <select name="categoria" id="categoria">
+                            <option value="">Elije moneda de cambio</option>
+                            <option value="EUR">Euros</option>
+                            <option value="ETH">Ethereum</option>
+                            <option value="LTC">Litecoin</option>
+                        </select>
+                    </div>
+                    <div class="column column-33">
+                        <label for="to_cantidad">Cantidad</label>
+                        <input type="number" name="cantidad" id="to_cantidad" step="any">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column">
+                        <button class= "float-right" id="crear">Realizar</button>
+                        <a href="">Cancelar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </body>
+    <footer>&copy 2021</footer>
+</html>
