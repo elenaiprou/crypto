@@ -10,34 +10,39 @@
         <script src="/static/js/spa.js"></script>
     </head>
     <body>
-        <head>myCrypto</head>
-        <section class="container" id="principal">
-            <h1>Control compra de monedas</h1>
-            <div class="lista-movimientos">
-                <table class="tabla-crypto">
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>De moneda</th>
-                            <th>Cantidad</th>
-                            <th>A moneda</th>
-                            <th>Cantidad</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </section>
-        <hr>
-        <div class="detail-movimiento container">
-            <form >
-                <div class="row">
-                    <input type="hidden" id="idMovimiento">
-                    <div class="column column-33">
-                        <label for="fecha">Fecha</label>
-                        <input type="date" name="fecha" id="fecha">
-                    </div>
+        <head>
+            <h1>myCrypto</h1>
+        </head>
+            <section class="container" id="principal">
+                <h2>Control compra de monedas</h2>
+                <div class="lista-movimientos">
+                    <table class="tabla-crypto">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>De moneda</th>
+                                <th>Cantidad</th>
+                                <th>A moneda</th>
+                                <th>Cantidad</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
+            </section>
+            <section class="container" id="secundario">
+                <h2>Situación actual</h2>
+                <form>
+                    <div class="row">
+                        <div class="column column-33">
+                            <label for="from_moneda">De moneda</label>
+                            <input type="number" name="cantidad" id="from_cantidad" step="any">
+                </form>
+            </section>
+        <div class="detail-movimiento container" id="transaccion">
+            <h3>Nuevo movimiento</h3>
+            <hr>
+            <form >
                 <div class="row">
                     <div class="column column-33">
                         <label for="from_moneda">De moneda</label>
@@ -67,6 +72,8 @@
                         <label for="to_cantidad">Cambio</label>
                         <input type="number" name="precio" id="precio" step="any">
                     </div>
+                </div>
+                <div class="row">
                     <div class="column column-33">
                         <label for="precio unitario"> Precio unitaro</label>
                         <input type="number" name="unitario" id="unitario" step="any">
@@ -75,7 +82,7 @@
                 <div class="row">
                     <div class="column">
                         <button id="calcular">Calcular</button>
-                        <button class= "float-right" id="realizar">Realizar</button>
+                        <button id="realizar">Realizar</button>
                         <div>
                             <a href="">Cancelar</a>
                         </div>
@@ -84,5 +91,5 @@
             </form>
         </div>
     </body>
-    <footer>&copy 2021</footer>
+<footer>&copy 2021</footer>
 </html>

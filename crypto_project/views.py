@@ -72,7 +72,9 @@ def detalleMovimiento(id=None):
 @app.route('/api/v1/par/<quantity>/<_from>/<_to>')
 @app.route('/api/v1/par/<_from>/<_to>')
 def buscaApi(quantity, _from, _to):
-    return cmc.priceConversion(quantity, _from, _to)
+    res = cmc.priceConversion(quantity, _from, _to)
+    
+    return jsonify({'status': 'success', 'resultado': res})
 
 '''
 @app.route('/api/v1/par/<_from>/<_to>/<quantity>')

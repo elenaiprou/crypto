@@ -27,7 +27,7 @@ class CMC():
         except (ConnectionError, Timeout, TooManyRedirects) as e:
             print(e)
         
-        #return data
+        return data
 
 
 cmc = CMC(app.config.get('API_KEY'))
