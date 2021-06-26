@@ -134,18 +134,28 @@ function validar(movimiento) {
     return true
 }
 
+
 function llamaApiCoinmarket(evento) { //por ahora tengo que baserme en esto 
     evento.preventDefault()
     const movimiento = {}
-    movimiento.moneda_from = document.querySelector("#moneda_from").value
-    movimiento.cantidad_from = document.querySelector("#cantidad_from").value
-    movimiento.moneda_to = document.querySelector("#moneda_to").value
-    xhr.open("GET", `http://localhost:5000/api/v1/par/${movimiento.moneda_from}/${movimiento.moneda_to}/${movimiento.cantidad_from}`, true)
+    
+    movimiento.from_moneda = document.querySelector("#categoria").value
+    movimiento.from_cantidad = document.querySelector("#from_cantidad").value
+    movimiento.to_moneda = document.querySelector("#cambio").value
+    xhr.open("GET", `http://localhost:5000/api/v1/par/${movimiento.from_cantidad}/${movimiento.from_moneda}/${movimiento.to_moneda}`, true)
     xhr.onload = recibeRespuestaCoinmarket //me falta esta funcion 
     xhr.send()
     console.log("He lanzado petición a Coin Market")
 }
 
+function recibeRespuestaCoinmarket() {
+    debugger
+    va = JSON.parse(this.responseText)
+    fe = Object.keys(va.resultado.quote)[0]
+    data = va.resultado.quote[fe].price
+
+    document.querySelector("#precio").value = data
+}
 
 function llamaApiCreaMovimiento(ev) {
     ev.preventDefault()
@@ -165,6 +175,11 @@ function llamaApiCreaMovimiento(ev) {
 window.onload = function() {
     llamaApiMovimientos()
     
+        document.querySelector('#calcular')
+        .addEventListener("click", llamaApiCoinmarket)
+
         document.querySelector("#realizar")
         .addEventListener("click", llamaApiCreaMovimiento)
+
+
 }
