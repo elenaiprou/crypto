@@ -45,7 +45,7 @@ function detallaMovimiento(id) {
     document.querySelector("#De moneda").value = crypto.from_moneda
     document.querySelector("#Cantidad").value = crypto.from_cantidad.toFixed(2)
     document.querySelector("#A moneda").value = crypto.to_moneda
-    document.querySelector("#Cantidad").value = crypto.to_cantidad.toFixed(2)
+    document.querySelector("#Cantidad").value = crypto.to_cantidad.toFixed(8)
     
 }
 

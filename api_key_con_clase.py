@@ -7,17 +7,17 @@ from crypto_project import app
 class CMC():
     def __init__(self, token):
         self.apiurl = 'https://pro-api.coinmarketcap.com'
-        self.headers = headers = {'Accepts': 'application/json', 'X-CMC_PRO_API_KEY': app.config.get('API_KEY')}
+        headers = {'Accepts': 'application/json', 'X-CMC_PRO_API_KEY': app.config.get('API_KEY')}
 
         self.session = Session()
-        self.session.headers.update(headers=headers)
+        self.session.headers.update(headers)
         
     def priceConversion(self, amount, symbol, convert):
         url = self.apiurl + '/v1/tools/price-conversion'
         parameters = {
-            'amount':'amount',
+            'amount': amount,
             'symbol': symbol,
-            'convert':convert
+            'convert': convert
             }
 
         try:
@@ -26,6 +26,8 @@ class CMC():
             print(data)
         except (ConnectionError, Timeout, TooManyRedirects) as e:
             print(e)
+        
+        #return data
 
 
 cmc = CMC(app.config.get('API_KEY'))

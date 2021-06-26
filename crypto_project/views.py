@@ -4,11 +4,10 @@ from crypto_project.dataaccess import DBmanager
 import sqlite3
 from http import HTTPStatus
 import requests
-#from crypto_project.api_key import CMC 
-
+from api_key_con_clase import CMC
 
 dbManager = DBmanager(app.config.get('DATABASE'))
-#cmc = CMC(app.config.get('API_KEY'))
+cmc = CMC(app.config.get('API_KEY'))
 
 @app.route('/')
 def listaMovimientos():
@@ -70,13 +69,12 @@ def detalleMovimiento(id=None):
         return jsonify({"status": "fail", "mensaje": "Error en base de datos: {}".format(e)}), HTTPStatus.BAD_REQUEST
 
 
-'''
 @app.route('/api/v1/par/<quantity>/<_from>/<_to>')
 @app.route('/api/v1/par/<_from>/<_to>')
-def buscaApi():
-    return cmc.priceConversion()
+def buscaApi(quantity, _from, _to):
+    return cmc.priceConversion(quantity, _from, _to)
 
-
+'''
 @app.route('/api/v1/par/<_from>/<_to>/<quantity>')
 @app.route('/api/v1/par/<_from>/<_to>')
 def par(_from, _to, quantity = 1.0):
