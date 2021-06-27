@@ -32,7 +32,7 @@ def detalleMovimiento(id=None):
     try:
         if request.method in ('GET'):
             movimiento = dbManager.consultaUnaSQL("SELECT * FROM crypto WHERE id = ?", [id])
-        
+
         if request.method == 'GET':
             if movimiento:
                 return jsonify({
@@ -43,10 +43,12 @@ def detalleMovimiento(id=None):
                 return jsonify({"status": "fail", "mensaje": "movimiento no encontrado"}), HTTPStatus.NOT_FOUND
 
         if request.method == 'POST':
+            #fecha = str(date.today())
+            #print(fecha) 
             dbManager.modificaTablaSQL("""
                 INSERT INTO crypto
                     (fecha, from_moneda, from_cantidad, to_moneda, to_cantidad)
-                VALUES (:fecha, :from_moneda, :from_cantidad, :to_moneda, :cantidad)
+                VALUES (:fecha, :from_moneda, :from_cantidad, :to_moneda, :to_cantidad)
                 """, request.json)
 
             return jsonify({"status": "success", "mensaje": "registro creado"}), HTTPStatus.CREATED
@@ -59,8 +61,9 @@ def detalleMovimiento(id=None):
 @app.route('/api/v1/par/<quantity>/<_from>/<_to>')
 @app.route('/api/v1/par/<_from>/<_to>')
 def buscaApi(quantity, _from, _to):
+
     res = cmc.priceConversion(quantity, _from, _to)
-    
+        
     return jsonify({'status': 'success', 'resultado': res})
 
 '''

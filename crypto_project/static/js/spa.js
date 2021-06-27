@@ -92,7 +92,10 @@ function llamaApiMovimientos() {
 
 function capturaFormMovimiento() {
     const movimiento = {}
-    movimiento.fecha = document.querySelector("#fecha").value
+    let today = new Date().toISOString().slice(0, 10);
+    console.log(today)
+
+    movimiento.fecha = today
     movimiento.from_moneda = document.querySelector("#categoria").value
     movimiento.from_cantidad = document.querySelector("#from_cantidad").value
     movimiento.to_moneda = document.querySelector("#cambio").value
@@ -138,7 +141,7 @@ function validar(movimiento) {
 function llamaApiCoinmarket(evento) { //por ahora tengo que baserme en esto 
     evento.preventDefault()
     const movimiento = {}
-    
+
     movimiento.from_moneda = document.querySelector("#categoria").value
     movimiento.from_cantidad = document.querySelector("#from_cantidad").value
     movimiento.to_moneda = document.querySelector("#cambio").value
@@ -149,7 +152,6 @@ function llamaApiCoinmarket(evento) { //por ahora tengo que baserme en esto
 }
 
 function recibeRespuestaCoinmarket() {
-    debugger
     va = JSON.parse(this.responseText)
     fe = Object.keys(va.resultado.quote)[0]
     data = va.resultado.quote[fe].price
