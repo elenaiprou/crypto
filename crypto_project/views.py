@@ -5,7 +5,6 @@ from crypto_project.dataaccess import DBmanager
 import sqlite3
 from http import HTTPStatus
 import requests
-from datetime import date
 
 
 dbManager = DBmanager(app.config.get('DATABASE'))

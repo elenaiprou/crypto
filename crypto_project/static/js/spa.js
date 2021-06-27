@@ -2,6 +2,16 @@ const categoria = {
     EUR: 'Euros',
     ETH: 'Ethereum',
     LTC: 'Litecoin',
+    BNB: 'Binance Coin',
+    EOS: 'EOS',
+    XLM: 'Stellar',
+    TRX: 'TRON',
+    BTC: 'Bitcoin',
+    XRP: 'XRP',
+    BCH: 'Bitcoin Cash',
+    USDT: 'Tether',
+    BSV: 'Bitcoin SV',
+    ADA: 'Cardano',
 }
 
 let losMovimientos //variable global sin nada, para guardar los movimientos "pa' luego"
@@ -43,7 +53,7 @@ function detallaMovimiento(id) {
     document.querySelector("#idMovimiento").value = id
     document.querySelector("#Fecha").value = crypto.fecha
     document.querySelector("#De moneda").value = crypto.from_moneda
-    document.querySelector("#Cantidad").value = crypto.from_cantidad.toFixed(2)
+    document.querySelector("#Cantidad").value = crypto.from_cantidad.toFixed(8)
     document.querySelector("#A moneda").value = crypto.to_moneda
     document.querySelector("#Cantidad").value = crypto.to_cantidad.toFixed(8)
     
@@ -104,16 +114,17 @@ function capturaFormMovimiento() {
 }
 
 function validar(movimiento) {
-    if (!movimiento.fecha) {
-        alert("fecha obligatoria")
+    if (movimiento.from_moneda == "EUR" && movimiento.to_moneda =='EUR') {
+        alert("Cambio no permitido")
         return false
     }
 
-    if (movimiento.concepto === "") {
-        alert("Se ha de informar del concepto")
+    if (movimiento.from_cantidad <= 0) {
+        alert("Cantidad ha de ser positiva")
         return false
     }
 
+/*  
     if (document.querySelector("#gasto").checked && !document.querySelector("#ingreso").checked) {
         alert("Elija tipo de movimiento")
         return false
@@ -129,22 +140,26 @@ function validar(movimiento) {
         return false
     }
     
-    if (movimiento.cantidad <= 0) {
-        alert("Cantidad ha de ser positiva")
-        return false
-    }
-
+ */
     return true
+
 }
 
-
 function llamaApiCoinmarket(evento) { //por ahora tengo que baserme en esto 
-    evento.preventDefault()
     const movimiento = {}
-
     movimiento.from_moneda = document.querySelector("#categoria").value
     movimiento.from_cantidad = document.querySelector("#from_cantidad").value
     movimiento.to_moneda = document.querySelector("#cambio").value
+    
+    return movimiento
+    }
+
+function calculaApiCoinMarket (ev) {
+    ev.preventDefault()
+    const movimiento = llamaApiCoinmarket()
+    if (!validar(movimiento)) {
+        return
+    }
     xhr.open("GET", `http://localhost:5000/api/v1/par/${movimiento.from_cantidad}/${movimiento.from_moneda}/${movimiento.to_moneda}`, true)
     xhr.onload = recibeRespuestaCoinmarket //me falta esta funcion 
     xhr.send()
@@ -155,16 +170,16 @@ function recibeRespuestaCoinmarket() {
     va = JSON.parse(this.responseText)
     fe = Object.keys(va.resultado.quote)[0]
     data = va.resultado.quote[fe].price
+    precioUnitario = data / va.resultado.amount
+    console.log(precioUnitario)
 
-    document.querySelector("#precio").value = data
+    document.querySelector("#precio").value = data.toFixed(8)
+    document.querySelector("#unitario").value = precioUnitario.toFixed(8)
 }
 
 function llamaApiCreaMovimiento(ev) {
     ev.preventDefault()
     const movimiento = capturaFormMovimiento ()
-    /*if (!validar(movimiento)) {
-        return
-    }*/
 
     xhr.open("POST", `http://localhost:5000/api/v1/movimiento`, true)
     xhr.onload = recibeRespuesta
@@ -178,7 +193,7 @@ window.onload = function() {
     llamaApiMovimientos()
     
         document.querySelector('#calcular')
-        .addEventListener("click", llamaApiCoinmarket)
+        .addEventListener("click", calculaApiCoinMarket)
 
         document.querySelector("#realizar")
         .addEventListener("click", llamaApiCreaMovimiento)
