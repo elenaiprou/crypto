@@ -43,3 +43,14 @@ class DBmanager():
 
         conexion.commit()
         conexion.close()
+    
+    def calculaSaldos(self, query, parametros=[]):
+        # Abrimos la conexion
+        conexion = sqlite3.connect(self.database_path)
+        cur = conexion.cursor()
+
+        # Ejecutamos la consulta
+        cur.execute(query, parametros)
+        resultado = self.__toDict__(cur)
+        conexion.close()
+        return resultado

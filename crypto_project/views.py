@@ -56,7 +56,7 @@ def detalleMovimiento(id=None):
         print("BBDD error:", e)
         return jsonify({"status": "fail", "mensaje": "Error en base de datos: {}".format(e)}), HTTPStatus.BAD_REQUEST
 
-
+#para hacer el cambio y comprar 
 @app.route('/api/v1/par/<quantity>/<_from>/<_to>')
 @app.route('/api/v1/par/<_from>/<_to>')
 def buscaApi(quantity, _from, _to):
@@ -65,22 +65,24 @@ def buscaApi(quantity, _from, _to):
         
     return jsonify({'status': 'success', 'resultado': res})
 
-
+#para hacer los calculos monedas invertidas
 @app.route('/api/v1/cal/<quantity>/<_from>/<_to>')
 def monedasInv(quantity, _from, _to):
+    try:
+        res = cmc.priceConversion(quantity, _from, _to)
+        return jsonify({'status': 'success', 'resultado': res})
+    except sqlite3.Error as e:
+        return jsonify({'status': 'fail', 'mensaje': str(e)})
 
-    res = cmc.priceConversion(quantity, _from, _to)
-        
-    return jsonify({'status': 'success', 'resultado': res})
 
 #intentando hacer los calcuos desde BBDD. Por ahora no sigo por aquí
 @app.route('/api/v1/movimiento/operamos')
 def calculos():
 
-    query = "SELECT SUM(from_cantidad) FROM crypto GROUP BY from_moneda"
+    query = "SELECT SUM(to_cantidad) FROM crypto GROUP BY to_moneda"
 
     try:
-        lista = dbManager.consultaMuchasSQL(query)
+        lista = dbManager.calculaSaldos(query)
         return jsonify({'status': 'success', 'crypto': lista})
     except sqlite3.Error as e:
         return jsonify({'status': 'fail', 'mensaje': str(e)})

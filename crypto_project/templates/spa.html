@@ -14,7 +14,7 @@
             <h1>myCrypto</h1>
         </head>
             <section class="container" id="principal">
-                <h2>Control compra de monedas</h2>
+                <h2>Movimientos de las inversiones</h2>
                 <div class="lista-movimientos">
                     <table class="tabla-crypto">
                         <thead>
@@ -35,8 +35,20 @@
                 <form>
                     <div class="row">
                         <div class="column column-33">
-                            <label for="from_moneda">De moneda</label>
-                            <input type="number" name="cantidad" step="any">
+                            <label for="from_moneda">Euros invertidos</label>
+                            <input type="number" name="cantidad" id ="saldoEuros" step="any" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="column column-33">
+                            <label for="from_moneda">Euros Gastados</label>
+                            <input type="number" name="cantidad" id ="gastado" step="any" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="column column-33">
+                            <label for="from_moneda">Posción actual</label>
+                            <input type="number" name="cantidad" id ="posicionfinal" step="any" readonly>
                         </div>
                     </div>
                     <div class="row">
@@ -47,7 +59,7 @@
                 </form>
             </section>
         <div class="detail-movimiento container" id="transaccion">
-            <h3>Nuevo movimiento</h3>
+            <h3>Nueva transacción</h3>
             <hr>
             <form >
                 <div class="row">

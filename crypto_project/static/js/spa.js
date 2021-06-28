@@ -17,6 +17,7 @@ const categoria = {
 let losMovimientos //variable global sin nada, para guardar los movimientos "pa' luego"
 // var folio = document.querySelector("#folio")
 
+
 xhr = new XMLHttpRequest()
 xhr.onload = muestraMovimientos
 
@@ -34,7 +35,6 @@ function recibeRespuesta() {
         llamaApiMovimientos()
     }
 }
-
 
 function detallaMovimiento(id) {
 
@@ -59,7 +59,6 @@ function detallaMovimiento(id) {
     document.querySelector("#Cantidad").value = crypto.to_cantidad.toFixed(8)
     
 }
-
 
 function muestraMovimientos() {
     if (this.readyState === 4 && this.status === 200) {
@@ -146,7 +145,7 @@ function validar(movimiento) {
 
 }
 
-function llamaApiCoinmarket(evento) { //por ahora tengo que baserme en esto 
+function llamaApiCoinmarket(evento) { 
     const movimiento = {}
     movimiento.from_moneda = document.querySelector("#categoria").value
     movimiento.from_cantidad = document.querySelector("#from_cantidad").value
@@ -162,16 +161,16 @@ function calculaApiCoinMarket (ev) {
         return
     }
     xhr.open("GET", `http://localhost:5000/api/v1/par/${movimiento.from_cantidad}/${movimiento.from_moneda}/${movimiento.to_moneda}`, true)
-    xhr.onload = recibeRespuestaCoinmarket //me falta esta funcion 
+    xhr.onload = recibeRespuestaCoinmarket 
     xhr.send()
     console.log("He lanzado petición a Coin Market")
 }
 
 function recibeRespuestaCoinmarket() {
-    va = JSON.parse(this.responseText)
-    fe = Object.keys(va.resultado.quote)[0]
-    data = va.resultado.quote[fe].price
-    precioUnitario = data / va.resultado.amount
+    variable = JSON.parse(this.responseText)
+    fe = Object.keys(variable.resultado.quote)[0] //le he pueste "fe" a la variable porque no sabia que poner
+    data = variable.resultado.quote[fe].price
+    precioUnitario = data / variable.resultado.amount
     console.log(precioUnitario)
 
     document.querySelector("#precio").value = data.toFixed(8)
@@ -190,7 +189,34 @@ function llamaApiCreaMovimiento(ev) {
     xhr.send(JSON.stringify(movimiento))
 }
 
-function calculos() {
+function InversionApiCoinMarket (key, valor) {
+
+    xhr.open("GET", `http://localhost:5000/api/v1/cal/${valor}/${key}/EUR`, true)
+    xhr.onload = recibeInversionCoinmarket 
+    xhr.send()
+    console.log("He lanzado petición a Coin Market")
+}
+
+function recibeInversionCoinmarket() {
+
+    moneda = JSON.parse(this.responseText)
+    console.log(moneda)
+    fe = Object.keys(moneda.resultado.quote)[0]
+    cambioAeuros = moneda.resultado.quote[fe].price
+
+    calculaEuros(cambioAeuros)
+}
+
+function calculaEuros(cambioAeuros){
+
+    let eurosInvertidos= {}
+    eurosInvertidos =+ cambioAeuros
+
+    return eurosInvertidos
+}
+
+function calculos(ev) {
+    ev.preventDefault()
     let resultsinvertido = {
     EUR: 0,
     ETH: 0,
@@ -237,24 +263,34 @@ function calculos() {
 
     Object.keys(resultsinvertido).forEach(key => {
         if (resultsgastado.hasOwnProperty(key)) {
+            if (key == "EUR"){
+                return
+            }
             posicionMonedas[key] = resultsinvertido[key] - resultsgastado[key]
         }
     })
     console.log(posicionMonedas)
+    
+    var interval = 1000
+    Object.keys(posicionMonedas).forEach((key, index) => {
+        setTimeout(function() {
+            valor = posicionMonedas[key]
+            if (sentIfvalueExist(valor)){  
+                InversionApiCoinMarket(key, valor)}},
+                index*interval)
+    })
 }
 
-/*
-    for (let i=0; i<posicionMonedas.length; i++) {
-            posicionMonedas[i] = resultsinvertido[i] - resultsgastado[i]
-        }
-        console.log(posicionMonedas)
-        
-        
-    for(i = 0; i < resultsinvertido.length; i++){
-        posicionMonedas[i] = resultsinvertido[1] - resultsgastado[1];
-    }
-    console.log(posicionMonedas);*/
-
+function sentIfvalueExist(valor){ // sirve para evitar que valor = 0 llegue a la API. Si no peta la web de
+    var res
+    if (valor == 0)
+        res = false
+    else
+        res = true    
+    return res
+}
+    
+    
 
 window.onload = function() {
     llamaApiMovimientos()
