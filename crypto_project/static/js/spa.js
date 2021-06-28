@@ -35,6 +35,7 @@ function recibeRespuesta() {
     }
 }
 
+
 function detallaMovimiento(id) {
 
     //movimiento = losMovimientos.filter(item => item.id == id )[0]
@@ -189,6 +190,72 @@ function llamaApiCreaMovimiento(ev) {
     xhr.send(JSON.stringify(movimiento))
 }
 
+function calculos() {
+    let resultsinvertido = {
+    EUR: 0,
+    ETH: 0,
+    LTC: 0,
+    BNB: 0,
+    EOS: 0,
+    XLM: 0,
+    TRX: 0,  
+    BTC: 0,
+    XRP: 0,
+    BCH: 0,
+    USDT: 0, 
+    BSV: 0,
+    ADA: 0,
+    }
+
+    let resultsgastado = {
+        EUR: 0,
+        ETH: 0,
+        LTC: 0,
+        BNB: 0,
+        EOS: 0,
+        XLM: 0,
+        TRX: 0,  
+        BTC: 0,
+        XRP: 0,
+        BCH: 0,
+        USDT: 0, 
+        BSV: 0,
+        ADA: 0,
+        }
+
+    losMovimientos.forEach(element=> 
+        resultsinvertido[element.to_moneda]+= element.to_cantidad
+        )
+        console.log(resultsinvertido)
+    
+    losMovimientos.forEach(element=> 
+        resultsgastado[element.from_moneda]+= element.from_cantidad
+        )
+        console.log(resultsgastado)
+    
+    let posicionMonedas = {};
+
+    Object.keys(resultsinvertido).forEach(key => {
+        if (resultsgastado.hasOwnProperty(key)) {
+            posicionMonedas[key] = resultsinvertido[key] - resultsgastado[key]
+        }
+    })
+    console.log(posicionMonedas)
+}
+
+/*
+    for (let i=0; i<posicionMonedas.length; i++) {
+            posicionMonedas[i] = resultsinvertido[i] - resultsgastado[i]
+        }
+        console.log(posicionMonedas)
+        
+        
+    for(i = 0; i < resultsinvertido.length; i++){
+        posicionMonedas[i] = resultsinvertido[1] - resultsgastado[1];
+    }
+    console.log(posicionMonedas);*/
+
+
 window.onload = function() {
     llamaApiMovimientos()
     
@@ -198,5 +265,6 @@ window.onload = function() {
         document.querySelector("#realizar")
         .addEventListener("click", llamaApiCreaMovimiento)
 
-
+        document.querySelector("#actualizar")
+        .addEventListener("click", calculos)
 }
