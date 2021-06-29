@@ -17,6 +17,7 @@ const categoria = {
 let losMovimientos //variable global sin nada, para guardar los movimientos "pa' luego"
 // var folio = document.querySelector("#folio")
 
+let eurosInvertidos
 
 xhr = new XMLHttpRequest()
 xhr.onload = muestraMovimientos
@@ -113,7 +114,8 @@ function capturaFormMovimiento() {
     return movimiento
 }
 
-function validar(movimiento) {
+// validaciones antes de hacer el calculo de una moneda por otra
+function validaCalcular(movimiento) {
     if (movimiento.from_moneda == "EUR" && movimiento.to_moneda =='EUR') {
         alert("Cambio no permitido")
         return false
@@ -124,28 +126,79 @@ function validar(movimiento) {
         return false
     }
 
-/*  
-    if (document.querySelector("#gasto").checked && !document.querySelector("#ingreso").checked) {
-        alert("Elija tipo de movimiento")
-        return false
-    }
-
-    if (movimiento.esGasto && !movimient.categoria) {
-        alert("Debe seleccionar categoria del gasto")
-        return false
-    }
-
-    if (!movimiento.esGasto && movimient.categoria) {
-        alert("Un ingewao no puede tener categoria")
-        return false
-    }
-    
- */
     return true
-
 }
 
-function llamaApiCoinmarket(evento) { 
+// validaciones antes de grabar el cambio en la base de datos
+function validaRealizar(movimiento) {
+    
+    if (movimiento.to_cantidad <= 0) {
+        alert("Operación no valida")
+        return false
+    }
+
+    let resultsinvertido = {
+        EUR: 0,
+        ETH: 0,
+        LTC: 0,
+        BNB: 0,
+        EOS: 0,
+        XLM: 0,
+        TRX: 0,  
+        BTC: 0,
+        XRP: 0,
+        BCH: 0,
+        USDT: 0, 
+        BSV: 0,
+        ADA: 0,
+        }
+
+    let resultsgastado = {
+        EUR: 0,
+        ETH: 0,
+        LTC: 0,
+        BNB: 0,
+        EOS: 0,
+        XLM: 0,
+        TRX: 0,  
+        BTC: 0,
+        XRP: 0,
+        BCH: 0,
+        USDT: 0, 
+        BSV: 0,
+        ADA: 0,
+        }
+
+    losMovimientos.forEach(element=> 
+        resultsinvertido[element.to_moneda]+= element.to_cantidad
+        )
+    
+    losMovimientos.forEach(element=> 
+        resultsgastado[element.from_moneda]+= element.from_cantidad
+        )
+    
+    let posicionMonedas = {};
+
+    Object.keys(resultsinvertido).forEach(key => {
+        if (resultsgastado.hasOwnProperty(key)) {
+            if (key == "EUR"){
+                return
+            }
+            posicionMonedas[key] = resultsinvertido[key] - resultsgastado[key]
+        }
+        return posicionMonedas
+    })
+
+    if (posicionMonedas[movimiento.from_moneda]< movimiento.from_cantidad){
+        alert("No tienes saldo suficiente")
+        return false
+    }
+
+    return true
+}
+
+function llamaApiCoinmarket() { 
+
     const movimiento = {}
     movimiento.from_moneda = document.querySelector("#categoria").value
     movimiento.from_cantidad = document.querySelector("#from_cantidad").value
@@ -157,7 +210,7 @@ function llamaApiCoinmarket(evento) {
 function calculaApiCoinMarket (ev) {
     ev.preventDefault()
     const movimiento = llamaApiCoinmarket()
-    if (!validar(movimiento)) {
+    if (!validaCalcular(movimiento)) {
         return
     }
     xhr.open("GET", `http://localhost:5000/api/v1/par/${movimiento.from_cantidad}/${movimiento.from_moneda}/${movimiento.to_moneda}`, true)
@@ -180,7 +233,9 @@ function recibeRespuestaCoinmarket() {
 function llamaApiCreaMovimiento(ev) {
     ev.preventDefault()
     const movimiento = capturaFormMovimiento ()
-
+    if (!validaRealizar(movimiento)) {
+        return
+    }
     xhr.open("POST", `http://localhost:5000/api/v1/movimiento`, true)
     xhr.onload = recibeRespuesta
 
@@ -189,6 +244,7 @@ function llamaApiCreaMovimiento(ev) {
     xhr.send(JSON.stringify(movimiento))
 }
 
+// llama a la Api de CoinMarket para realizar el cambio a euros
 function InversionApiCoinMarket (key, valor) {
 
     xhr.open("GET", `http://localhost:5000/api/v1/cal/${valor}/${key}/EUR`, true)
@@ -196,7 +252,7 @@ function InversionApiCoinMarket (key, valor) {
     xhr.send()
     console.log("He lanzado petición a Coin Market")
 }
-
+// me da el valor de las monedas invertidas en euros
 function recibeInversionCoinmarket() {
 
     moneda = JSON.parse(this.responseText)
@@ -206,32 +262,32 @@ function recibeInversionCoinmarket() {
 
     calculaEuros(cambioAeuros)
 }
-
+//queria que sumara el valor total de los euros invertidos
 function calculaEuros(cambioAeuros){
 
-    let eurosInvertidos= {}
     eurosInvertidos =+ cambioAeuros
 
     return eurosInvertidos
 }
 
+//calcula la posicon final de cada moneda y lo manda funcion InversionApiCoinMarket & recibeInversionCoinmarket que me devuelve el valor en euros. 
 function calculos(ev) {
     ev.preventDefault()
     let resultsinvertido = {
-    EUR: 0,
-    ETH: 0,
-    LTC: 0,
-    BNB: 0,
-    EOS: 0,
-    XLM: 0,
-    TRX: 0,  
-    BTC: 0,
-    XRP: 0,
-    BCH: 0,
-    USDT: 0, 
-    BSV: 0,
-    ADA: 0,
-    }
+        EUR: 0,
+        ETH: 0,
+        LTC: 0,
+        BNB: 0,
+        EOS: 0,
+        XLM: 0,
+        TRX: 0,  
+        BTC: 0,
+        XRP: 0,
+        BCH: 0,
+        USDT: 0, 
+        BSV: 0,
+        ADA: 0,
+        }
 
     let resultsgastado = {
         EUR: 0,
@@ -271,7 +327,7 @@ function calculos(ev) {
     })
     console.log(posicionMonedas)
     
-    var interval = 1000
+    var interval = 500
     Object.keys(posicionMonedas).forEach((key, index) => {
         setTimeout(function() {
             valor = posicionMonedas[key]
