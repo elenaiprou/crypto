@@ -43,7 +43,6 @@ def detalleMovimiento(id=None):
 
         if request.method == 'POST':
 
-
             dbManager.modificaTablaSQL("""
                 INSERT INTO crypto
                     (fecha, from_moneda, from_cantidad, to_moneda, to_cantidad)
@@ -76,8 +75,13 @@ def monedasInv(quantity, _from, _to):
     except sqlite3.Error as e:
         return jsonify({'status': 'fail', 'mensaje': str(e)})
 
+'''
+@app.route('/api/v1/status')
+def estadoInversion():
+'''
 
-#intentando hacer los calcuos desde BBDD. Por ahora no sigo por aquí
+
+#intentando hacer los calcuos desde BBDD. Peeero decidí hacerlo en frontend....
 @app.route('/api/v1/movimiento/operamos')
 def calculos():
 

@@ -15,9 +15,15 @@ const categoria = {
 }
 
 let losMovimientos //variable global sin nada, para guardar los movimientos "pa' luego"
-// var folio = document.querySelector("#folio")
 
-let eurosInvertidos
+//let gastado = {}
+let invertido = {}
+let monedasFinal = {}
+let eurosInvertidos = 0
+let eurosGastados = 0
+let posiconActual = 0
+let contador = 0
+
 
 xhr = new XMLHttpRequest()
 xhr.onload = muestraMovimientos
@@ -93,6 +99,7 @@ function muestraMovimientos() {
             tbody.appendChild(fila)
         }
     }
+    calculos()
 }
 
 function llamaApiMovimientos() {
@@ -125,7 +132,6 @@ function validaCalcular(movimiento) {
         alert("Cantidad ha de ser positiva")
         return false
     }
-
     return true
 }
 
@@ -137,63 +143,19 @@ function validaRealizar(movimiento) {
         return false
     }
 
-    let resultsinvertido = {
-        EUR: 0,
-        ETH: 0,
-        LTC: 0,
-        BNB: 0,
-        EOS: 0,
-        XLM: 0,
-        TRX: 0,  
-        BTC: 0,
-        XRP: 0,
-        BCH: 0,
-        USDT: 0, 
-        BSV: 0,
-        ADA: 0,
-        }
-
-    let resultsgastado = {
-        EUR: 0,
-        ETH: 0,
-        LTC: 0,
-        BNB: 0,
-        EOS: 0,
-        XLM: 0,
-        TRX: 0,  
-        BTC: 0,
-        XRP: 0,
-        BCH: 0,
-        USDT: 0, 
-        BSV: 0,
-        ADA: 0,
-        }
-
-    losMovimientos.forEach(element=> 
-        resultsinvertido[element.to_moneda]+= element.to_cantidad
-        )
+    gastado = resultsGastado()
+    invertido = resultadosInvertido()
+    monedasFinal = posicionMonedas(gastado, invertido)
     
-    losMovimientos.forEach(element=> 
-        resultsgastado[element.from_moneda]+= element.from_cantidad
-        )
-    
-    let posicionMonedas = {};
-
-    Object.keys(resultsinvertido).forEach(key => {
-        if (resultsgastado.hasOwnProperty(key)) {
-            if (key == "EUR"){
-                return
-            }
-            posicionMonedas[key] = resultsinvertido[key] - resultsgastado[key]
-        }
-        return posicionMonedas
-    })
-
-    if (posicionMonedas[movimiento.from_moneda]< movimiento.from_cantidad){
-        alert("No tienes saldo suficiente")
+    if (monedasFinal[movimiento.from_moneda] == 0) {
+        alert("Cambio no permitido")
         return false
     }
 
+    if (movimiento.from_moneda != "EUR" && (monedasFinal[movimiento.from_moneda]< movimiento.from_cantidad)){
+        alert("No tienes saldo suficiente")
+        return false
+    }
     return true
 }
 
@@ -256,40 +218,38 @@ function InversionApiCoinMarket (key, valor) {
 function recibeInversionCoinmarket() {
 
     moneda = JSON.parse(this.responseText)
-    console.log(moneda)
     fe = Object.keys(moneda.resultado.quote)[0]
     cambioAeuros = moneda.resultado.quote[fe].price
-
+    //contador -=1
     calculaEuros(cambioAeuros)
+    escribeResultados(eurosInvertidos)
+    /*if (contadir == 1){
+        escribeResultados(eurosInvertidos)
+    }*/
+
 }
 //queria que sumara el valor total de los euros invertidos
 function calculaEuros(cambioAeuros){
 
-    eurosInvertidos =+ cambioAeuros
+    eurosInvertidos += cambioAeuros
 
-    return eurosInvertidos
 }
 
 //calcula la posicon final de cada moneda y lo manda funcion InversionApiCoinMarket & recibeInversionCoinmarket que me devuelve el valor en euros. 
-function calculos(ev) {
-    ev.preventDefault()
-    let resultsinvertido = {
-        EUR: 0,
-        ETH: 0,
-        LTC: 0,
-        BNB: 0,
-        EOS: 0,
-        XLM: 0,
-        TRX: 0,  
-        BTC: 0,
-        XRP: 0,
-        BCH: 0,
-        USDT: 0, 
-        BSV: 0,
-        ADA: 0,
-        }
+function calculos() {
+    //ev.preventDefault()
+        
+    gastado = resultsGastado()
+    invertido = resultadosInvertido()
+    monedasFinal = posicionMonedas(gastado, invertido)
 
-    let resultsgastado = {
+    EnviarMonedasApi()
+}
+
+//funcion lista de monedas gastadas
+function resultsGastado(){
+
+    let gastado = {
         EUR: 0,
         ETH: 0,
         LTC: 0,
@@ -306,38 +266,64 @@ function calculos(ev) {
         }
 
     losMovimientos.forEach(element=> 
-        resultsinvertido[element.to_moneda]+= element.to_cantidad
+        gastado[element.from_moneda]+= element.from_cantidad
         )
-        console.log(resultsinvertido)
+    return gastado
     
-    losMovimientos.forEach(element=> 
-        resultsgastado[element.from_moneda]+= element.from_cantidad
-        )
-        console.log(resultsgastado)
+}
+//funcion lista de monedas ivertidas
+function resultadosInvertido(){
     
-    let posicionMonedas = {};
+    let invertido= {
+        EUR: 0,
+        ETH: 0,
+        LTC: 0,
+        BNB: 0,
+        EOS: 0,
+        XLM: 0,
+        TRX: 0,  
+        BTC: 0,
+        XRP: 0,
+        BCH: 0,
+        USDT: 0, 
+        BSV: 0,
+        ADA: 0,
+        }
 
-    Object.keys(resultsinvertido).forEach(key => {
-        if (resultsgastado.hasOwnProperty(key)) {
+        losMovimientos.forEach(element=> 
+            invertido[element.to_moneda]+= element.to_cantidad
+            )
+        return invertido
+}
+//funcion posicion final de cada moneda, menos de los EUR
+function posicionMonedas(gastado, invertido){
+    let monedasFinal = {};
+
+    Object.keys(invertido).forEach(key => {
+        if (gastado.hasOwnProperty(key)) {
             if (key == "EUR"){
                 return
             }
-            posicionMonedas[key] = resultsinvertido[key] - resultsgastado[key]
+            monedasFinal[key] = invertido[key] - gastado[key]
         }
     })
-    console.log(posicionMonedas)
-    
-    var interval = 500
-    Object.keys(posicionMonedas).forEach((key, index) => {
+    return monedasFinal
+}
+//Envia posicion final de cada moneda a la api para hacer la conversion a EUR
+function EnviarMonedasApi (){
+
+    var interval = 1000
+    Object.keys(monedasFinal).forEach((key, index) => {
         setTimeout(function() {
-            valor = posicionMonedas[key]
-            if (sentIfvalueExist(valor)){  
+            valor = monedasFinal[key]
+            if (sentIfvalueExist(valor)){
+                //contador += 1  
                 InversionApiCoinMarket(key, valor)}},
                 index*interval)
     })
 }
-
-function sentIfvalueExist(valor){ // sirve para evitar que valor = 0 llegue a la API. Si no peta la web de
+// sirve para evitar que valor = 0 llegue a la API. Si no peta la web de
+function sentIfvalueExist(valor){ 
     var res
     if (valor == 0)
         res = false
@@ -345,8 +331,22 @@ function sentIfvalueExist(valor){ // sirve para evitar que valor = 0 llegue a la
         res = true    
     return res
 }
+
+//Funcion que es llamada por "calculos" y escibe los resultados en el formulario Situación actual
+function escribeResultados(eurosInvertidos){
+
+    eurosGastados = gastado.EUR - invertido.EUR
+    posiconActual = eurosInvertidos - eurosGastados
+
+    document.querySelector("#saldoEuros").value = eurosInvertidos.toFixed(2)
+    document.querySelector("#gastado").value = eurosGastados.toFixed(2)
+    document.querySelector("#posicionfinal").value = posiconActual.toFixed(2)
+}
+/*
+function numeroContactosApi(){
     
-    
+    contador = 1
+}*/
 
 window.onload = function() {
     llamaApiMovimientos()
@@ -359,4 +359,7 @@ window.onload = function() {
 
         document.querySelector("#actualizar")
         .addEventListener("click", calculos)
+
+        //document.querySelector("#actualizar")
+        //.addEventListener("click", numeroContactosApi)
 }
