@@ -42,6 +42,9 @@ def detalleMovimiento(id=None):
                 return jsonify({"status": "fail", "mensaje": "movimiento no encontrado"}), HTTPStatus.NOT_FOUND
 
         if request.method == 'POST':
+            # if request.json['from_moneda'] != "EUR":
+            #     if dbManager.calculaSaldos(request.json['from_moneda'])< float(request.json['to_moneda']):
+            #         return jsonify({"status": "fail", "mensaje": "saldo insuficiente"}), HTTPStatus.OK
 
             dbManager.modificaTablaSQL("""
                 INSERT INTO crypto
@@ -75,20 +78,46 @@ def monedasInv(quantity, _from, _to):
     except sqlite3.Error as e:
         return jsonify({'status': 'fail', 'mensaje': str(e)})
 
-'''
-@app.route('/api/v1/status')
-def estadoInversion():
-'''
-
 
 #intentando hacer los calcuos desde BBDD. Peeero decidí hacerlo en frontend....
-@app.route('/api/v1/movimiento/operamos')
-def calculos():
+@app.route('/api/v1/movimiento/operamos/<from_moneda>')
+def calculosNofUNCINA(from_moneda):
 
-    query = "SELECT SUM(to_cantidad) FROM crypto GROUP BY to_moneda"
+    query = ("SELECT SUM(to_cantidad) FROM crypto WHERE to_moneda=?", [from_moneda])
 
     try:
         lista = dbManager.calculaSaldos(query)
         return jsonify({'status': 'success', 'crypto': lista})
+    except sqlite3.Error as e:
+        return jsonify({'status': 'fail', 'mensaje': str(e)})
+
+#intentando hacer los calcuos desde BBDD. --> lista con las monedas finales invertidas menos los EUR.
+@app.route('/api/v1/movimiento/operamos')
+def calculos():
+
+    #query1 = "SELECT to_moneda, to_cantidad FROM crypto ORDER BY fecha;"
+    #query2 = "SELECT from_moneda, from_cantidad FROM crypto ORDER BY fecha;"
+    query2 = "SELECT SUM(from_cantidad), from_moneda FROM crypto GROUP BY from_moneda"
+    query1 = "SELECT SUM(to_cantidad), to_moneda FROM crypto GROUP BY to_moneda"
+    try:
+        lista1 = dbManager.calculaSaldos(query1)
+        lista2 = dbManager.calculaSaldos(query2)
+
+        lista =[]
+        saldoFinal = []
+        for t in lista1:
+            if t['to_moneda'] == "EUR":
+                pass
+            else:
+                saldo = t['SUM(to_cantidad)']
+                for f in lista2:
+                    if t['to_moneda'] == f['from_moneda']:
+                        saldo = t['SUM(to_cantidad)'] - f["SUM(from_cantidad)"]
+                        print(saldo)
+                lista.append(t['to_moneda'])
+                saldoFinal.append(saldo)
+        listaf = dict(zip(lista, saldoFinal))
+
+        return jsonify({'status': 'success', 'crypto': listaf})
     except sqlite3.Error as e:
         return jsonify({'status': 'fail', 'mensaje': str(e)})

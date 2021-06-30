@@ -17,14 +17,6 @@ const categoria = {
 let losMovimientos //variable global sin nada, para guardar los movimientos "pa' luego"
 let eurosInvertidos = 0
 
-//let gastado = {}
-//let invertido = {}
-//let monedasFinal = {}
-//let eurosGastados = 0
-//let posiconActual = 0
-//let contador = 0
-
-
 xhr = new XMLHttpRequest()
 xhr.onload = muestraMovimientos
 
@@ -138,24 +130,24 @@ function validaCalcular(movimiento) {
 // validaciones antes de grabar el cambio en la base de datos
 function validaRealizar(movimiento) {
     
-    if (movimiento.to_cantidad <= 0) {
-        alert("Operación no valida")
-        return false
-    }
+    // if (movimiento.to_cantidad <= 0) {
+    //     alert("Operación no valida")
+    //     return false
+    // }
 
-    gastado = resultsGastado()
-    invertido = resultadosInvertido()
-    monedasFinal = posicionMonedas(gastado, invertido)
+    // gastado = resultsGastado()
+    // invertido = resultadosInvertido()
+    // monedasFinal = posicionMonedas(gastado, invertido)
     
-    if (monedasFinal[movimiento.from_moneda] == 0) {
-        alert("Cambio no permitido")
-        return false
-    }
+    // if (monedasFinal[movimiento.from_moneda] == 0) {
+    //     alert("Cambio no permitido")
+    //     return false
+    // }
 
-    if (movimiento.from_moneda != "EUR" && (monedasFinal[movimiento.from_moneda]< movimiento.from_cantidad)){
-        alert("No tienes saldo suficiente")
-        return false
-    }
+    // if (movimiento.from_moneda != "EUR" && (monedasFinal[movimiento.from_moneda]< movimiento.from_cantidad)){
+    //     alert("No tienes saldo suficiente")
+    //     return false
+    // }
     return true
 }
 
