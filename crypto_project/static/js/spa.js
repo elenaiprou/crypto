@@ -15,14 +15,14 @@ const categoria = {
 }
 
 let losMovimientos //variable global sin nada, para guardar los movimientos "pa' luego"
+let eurosInvertidos = 0
 
 //let gastado = {}
-let invertido = {}
-let monedasFinal = {}
-let eurosInvertidos = 0
-let eurosGastados = 0
-let posiconActual = 0
-let contador = 0
+//let invertido = {}
+//let monedasFinal = {}
+//let eurosGastados = 0
+//let posiconActual = 0
+//let contador = 0
 
 
 xhr = new XMLHttpRequest()
@@ -99,7 +99,7 @@ function muestraMovimientos() {
             tbody.appendChild(fila)
         }
     }
-    calculos()
+    //calculos()
 }
 
 function llamaApiMovimientos() {
@@ -167,7 +167,7 @@ function llamaApiCoinmarket() {
     movimiento.to_moneda = document.querySelector("#cambio").value
     
     return movimiento
-    }
+}
 
 function calculaApiCoinMarket (ev) {
     ev.preventDefault()
@@ -214,6 +214,7 @@ function InversionApiCoinMarket (key, valor) {
     xhr.send()
     console.log("He lanzado petición a Coin Market")
 }
+
 // me da el valor de las monedas invertidas en euros
 function recibeInversionCoinmarket() {
 
@@ -226,24 +227,23 @@ function recibeInversionCoinmarket() {
     /*if (contadir == 1){
         escribeResultados(eurosInvertidos)
     }*/
-
 }
+
 //queria que sumara el valor total de los euros invertidos
 function calculaEuros(cambioAeuros){
 
     eurosInvertidos += cambioAeuros
-
 }
 
 //calcula la posicon final de cada moneda y lo manda funcion InversionApiCoinMarket & recibeInversionCoinmarket que me devuelve el valor en euros. 
-function calculos() {
-    //ev.preventDefault()
+function calculos(ev) {
+    ev.preventDefault()
         
     gastado = resultsGastado()
     invertido = resultadosInvertido()
     monedasFinal = posicionMonedas(gastado, invertido)
 
-    EnviarMonedasApi()
+    EnviarMonedasApi(monedasFinal)
 }
 
 //funcion lista de monedas gastadas
@@ -310,7 +310,7 @@ function posicionMonedas(gastado, invertido){
     return monedasFinal
 }
 //Envia posicion final de cada moneda a la api para hacer la conversion a EUR
-function EnviarMonedasApi (){
+function EnviarMonedasApi (monedasFinal){
 
     var interval = 1000
     Object.keys(monedasFinal).forEach((key, index) => {
@@ -322,6 +322,7 @@ function EnviarMonedasApi (){
                 index*interval)
     })
 }
+
 // sirve para evitar que valor = 0 llegue a la API. Si no peta la web de
 function sentIfvalueExist(valor){ 
     var res
