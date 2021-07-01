@@ -1,6 +1,7 @@
 from flask import render_template, jsonify, request, Response
 from crypto_project import app
 from api_key_con_clase import CMC
+from crypto_project import dataaccess
 from crypto_project.dataaccess import DBmanager
 import sqlite3
 from http import HTTPStatus
@@ -79,21 +80,9 @@ def monedasInv(quantity, _from, _to):
         return jsonify({'status': 'fail', 'mensaje': str(e)})
 
 
-#intentando hacer los calcuos desde BBDD. Peeero decidí hacerlo en frontend....
-@app.route('/api/v1/movimiento/operamos/<from_moneda>')
-def calculosNofUNCINA(from_moneda):
-
-    query = ("SELECT SUM(to_cantidad) FROM crypto WHERE to_moneda=?", [from_moneda])
-
-    try:
-        lista = dbManager.calculaSaldos(query)
-        return jsonify({'status': 'success', 'crypto': lista})
-    except sqlite3.Error as e:
-        return jsonify({'status': 'fail', 'mensaje': str(e)})
-
 #intentando hacer los calcuos desde BBDD. --> lista con las monedas finales invertidas menos los EUR.
 @app.route('/api/v1/movimiento/operamos')
-def calculos():
+def calculos(quantity = None, _from =None):
 
     #query1 = "SELECT to_moneda, to_cantidad FROM crypto ORDER BY fecha;"
     #query2 = "SELECT from_moneda, from_cantidad FROM crypto ORDER BY fecha;"
@@ -116,8 +105,15 @@ def calculos():
                         print(saldo)
                 lista.append(t['to_moneda'])
                 saldoFinal.append(saldo)
-        listaf = dict(zip(lista, saldoFinal))
+        diccfi = dict(zip(lista, saldoFinal))
 
-        return jsonify({'status': 'success', 'crypto': listaf})
+        x=0
+        todoEuros= []
+        for d in diccfi:
+            x = diccfi[d]
+            monedaEuros = cmc.eurosConversion(x, d)
+            todoEuros.append(monedaEuros)
+
+        return jsonify({'status': 'success', 'crypto': todoEuros})
     except sqlite3.Error as e:
         return jsonify({'status': 'fail', 'mensaje': str(e)})

@@ -28,6 +28,22 @@ class CMC():
             print(e)
         
         return data
+    def eurosConversion(self, amount, symbol):
+        url = self.apiurl + '/v1/tools/price-conversion'
+        parameters = {
+            'amount': amount,
+            'symbol': symbol,
+            'convert': "EUR"
+            }
+
+        try:
+            response = self.session.get(url, params=parameters)
+            data = json.loads(response.text)['data'] #se puede sacar el precio si entras en el json, poniendo despues de ['data']['quote']['BTC']
+            print(data)
+        except (ConnectionError, Timeout, TooManyRedirects) as e:
+            print(e)
+        
+        return data
 
 
 cmc = CMC(app.config.get('API_KEY'))

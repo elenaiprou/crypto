@@ -173,7 +173,7 @@ function calculaApiCoinMarket (ev) {
     console.log("He lanzado petición a Coin Market")
 }
 
-function recibeRespuestaCoinmarket() {
+function recibeRespuestaCoinmarket() { // falta poner control de errores de la API?
     variable = JSON.parse(this.responseText)
     fe = Object.keys(variable.resultado.quote)[0] //le he pueste "fe" a la variable porque no sabia que poner
     data = variable.resultado.quote[fe].price
@@ -198,7 +198,7 @@ function llamaApiCreaMovimiento(ev) {
     xhr.send(JSON.stringify(movimiento))
 }
 
-// llama a la Api de CoinMarket para realizar el cambio a euros
+// llama a la Api de CoinMarket para realizar el cambio a euros con javascrip
 function InversionApiCoinMarket (key, valor) {
 
     xhr.open("GET", `http://localhost:5000/api/v1/cal/${valor}/${key}/EUR`, true)
@@ -207,7 +207,7 @@ function InversionApiCoinMarket (key, valor) {
     console.log("He lanzado petición a Coin Market")
 }
 
-// me da el valor de las monedas invertidas en euros
+// me da el valor de las monedas invertidas en euros con javascrip
 function recibeInversionCoinmarket() {
 
     moneda = JSON.parse(this.responseText)

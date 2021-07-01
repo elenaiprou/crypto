@@ -1,4 +1,11 @@
+
+.lista-movimientos {
+    background-color: rgb(243, 243, 243);
+    overflow: auto;
+    height: 350px;
+}
 .tabla-crypto tbody tr:hover{
+
     background-color:beige;
 }
 
