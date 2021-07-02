@@ -84,8 +84,6 @@ def monedasInv(quantity, _from, _to):
 @app.route('/api/v1/movimiento/operamos')
 def calculos(quantity = None, _from =None):
 
-    #query1 = "SELECT to_moneda, to_cantidad FROM crypto ORDER BY fecha;"
-    #query2 = "SELECT from_moneda, from_cantidad FROM crypto ORDER BY fecha;"
     query2 = "SELECT SUM(from_cantidad), from_moneda FROM crypto GROUP BY from_moneda"
     query1 = "SELECT SUM(to_cantidad), to_moneda FROM crypto GROUP BY to_moneda"
     try:
@@ -94,6 +92,7 @@ def calculos(quantity = None, _from =None):
 
         lista =[]
         saldoFinal = []
+
         for t in lista1:
             if t['to_moneda'] == "EUR":
                 pass
@@ -102,18 +101,43 @@ def calculos(quantity = None, _from =None):
                 for f in lista2:
                     if t['to_moneda'] == f['from_moneda']:
                         saldo = t['SUM(to_cantidad)'] - f["SUM(from_cantidad)"]
-                        print(saldo)
+
                 lista.append(t['to_moneda'])
                 saldoFinal.append(saldo)
         diccfi = dict(zip(lista, saldoFinal))
 
         x=0
-        todoEuros= []
+        EurosTot = 0
+        #todoEuros= []
         for d in diccfi:
             x = diccfi[d]
             monedaEuros = cmc.eurosConversion(x, d)
-            todoEuros.append(monedaEuros)
+            #todoEuros.append(monedaEuros)
+            EurosTot += monedaEuros
 
-        return jsonify({'status': 'success', 'crypto': todoEuros})
+        return jsonify({'status': 'success', 'crypto': EurosTot})
+    
+    except sqlite3.Error as e:
+        return jsonify({'status': 'fail', 'mensaje': str(e)})
+
+@app.route('/api/v1/movimiento/operamos/euros')
+def calculosEuros():
+
+    query2 = "SELECT SUM(from_cantidad), from_moneda FROM crypto GROUP BY from_moneda"
+    query1 = "SELECT SUM(to_cantidad), to_moneda FROM crypto GROUP BY to_moneda"
+    try:
+        lista1 = dbManager.calculaSaldos(query1)
+        lista2 = dbManager.calculaSaldos(query2)
+
+        for t in lista1:
+            if t['to_moneda'] == "EUR":
+                for f in lista2:
+                    if t['to_moneda'] == f['from_moneda']:
+                        saldoEuros = f["SUM(from_cantidad)"] - t['SUM(to_cantidad)']
+            else:
+                pass
+
+        return jsonify({'status': 'success', 'crypto': saldoEuros})
+    
     except sqlite3.Error as e:
         return jsonify({'status': 'fail', 'mensaje': str(e)})

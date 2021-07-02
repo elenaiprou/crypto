@@ -38,7 +38,7 @@ class CMC():
 
         try:
             response = self.session.get(url, params=parameters)
-            data = json.loads(response.text)['data'] #se puede sacar el precio si entras en el json, poniendo despues de ['data']['quote']['BTC']
+            data = json.loads(response.text)['data']['quote']['EUR']['price'] #me da el valor de EUR directamente. 
             print(data)
         except (ConnectionError, Timeout, TooManyRedirects) as e:
             print(e)
