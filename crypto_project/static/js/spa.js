@@ -115,44 +115,6 @@ function capturaFormMovimiento() {
     return movimiento
 }
 
-// validaciones antes de hacer el calculo de una moneda por otra
-function validaCalcular(movimiento) {
-    if (movimiento.from_moneda == "EUR" && movimiento.to_moneda =='EUR') {
-        alert("Cambio no permitido")
-        return false
-    }
-
-    if (movimiento.from_cantidad <= 0) {
-        alert("Cantidad ha de ser positiva")
-        return false
-    }
-    return true
-}
-
-// validaciones antes de grabar el cambio en la base de datos
-function validaRealizar(movimiento) {
-    
-    if (movimiento.to_cantidad <= 0) {
-        alert("Operación no valida")
-        return false
-    }
-
-    gastado = resultsGastado()
-    invertido = resultadosInvertido()
-    monedasFinal = posicionMonedas(gastado, invertido)
-    
-    if (monedasFinal[movimiento.from_moneda] == 0) {
-        alert("Cambio no permitido")
-        return false
-    }
-
-    if (movimiento.from_moneda != "EUR" && (monedasFinal[movimiento.from_moneda]< movimiento.from_cantidad)){
-        alert("No tienes saldo suficiente")
-        return false
-    }
-    return true
-}
-
 function llamaApiCoinmarket() { 
 
     const movimiento = {}
@@ -163,6 +125,7 @@ function llamaApiCoinmarket() {
     return movimiento
 }
 
+//Calcula el cambio de moneda 
 function calculaApiCoinMarket (ev) {
     ev.preventDefault()
 
@@ -188,6 +151,21 @@ function recibeRespuestaCoinmarket() { // falta poner control de errores de la A
     document.querySelector("#unitario").value = precioUnitario.toFixed(8)
 }
 
+// validaciones antes de hacer el calculo de una moneda por otra
+function validaCalcular(movimiento) {
+    if (movimiento.from_moneda == "EUR" && movimiento.to_moneda =='EUR') {
+        alert("Cambio no permitido")
+        return false
+    }
+
+    if (movimiento.from_cantidad <= 0) {
+        alert("Cantidad ha de ser positiva")
+        return false
+    }
+    return true
+}
+
+//Para grabar un nuevo movimiento.
 function llamaApiCreaMovimiento(ev) {
     ev.preventDefault()
     const movimiento = capturaFormMovimiento ()
@@ -202,6 +180,29 @@ function llamaApiCreaMovimiento(ev) {
     xhr.send(JSON.stringify(movimiento))
 }
 
+// validaciones antes de grabar el cambio en la base de datos 
+function validaRealizar(movimiento) {
+    
+    if (movimiento.to_cantidad <= 0) {
+        alert("Operación no valida")
+        return false
+    }
+
+    gastado = resultsGastado()
+    invertido = resultadosInvertido()
+    monedasFinal = posicionMonedas(gastado, invertido)
+    
+    if (monedasFinal[movimiento.from_moneda] == 0) {
+        alert("Cambio no permitido")
+        return false
+    }
+
+    if (movimiento.from_moneda != "EUR" && (monedasFinal[movimiento.from_moneda]< movimiento.from_cantidad)){
+        alert("No tienes saldo suficiente")
+        return false
+    }
+    return true
+}
 
 /*calcula la posicon final de cada moneda y lo manda función InversionApiCoinMarket & recibeInversionCoinmarket 
 que me devuelve el valor en euros. (Javascript)*/
@@ -292,7 +293,7 @@ function EnviarMonedasApi (monedasFinal){
     })
 }
 
-// sirve para evitar que valor = 0 llegue a la API. Si no peta la web de (Javascript)
+//sirve para evitar que valor = 0 llegue a la API. Si no peta la web de (Javascript)
 function sentIfvalueExist(valor){ 
     var res
     if (valor == 0)
@@ -302,7 +303,7 @@ function sentIfvalueExist(valor){
     return res
 }
 
-// llama a la Api de CoinMarket para realizar el cambio a euros con javascript
+// llama a la Api de CoinMarket para realizar el cambio a euros con Javascript
 function InversionApiCoinMarket (key, valor) {
 
     xhr.open("GET", `http://localhost:5000/api/v1/cal/${valor}/${key}/EUR`, true)
@@ -311,7 +312,7 @@ function InversionApiCoinMarket (key, valor) {
     console.log("He lanzado petición a Coin Market")
 }
 
-// me da el valor de las monedas invertidas en euros con javascript
+//me da el valor de las monedas invertidas en euros con Javascript
 function recibeInversionCoinmarket() {
 
     moneda = JSON.parse(this.responseText)
@@ -344,7 +345,6 @@ function escribeResultados(eurosInvertidos){
 
 
 //Llamadas para Inversion actual desde Python
-
 function calculosPython(ev){
     ev.preventDefault()
 
@@ -354,7 +354,7 @@ function calculosPython(ev){
     setTimeout(function(){escribeEurosTotales(cambioAeuros, eurosTotalesG)},4000)
 }
 
-async function cambioApiCoinMarketPython () {
+function cambioApiCoinMarketPython () {
 
     xhr.open("GET", `http://localhost:5000/api/v1/movimiento/operamos`, true)
     xhr.onload = recibeInversionTotalCoinmarketPython
@@ -368,7 +368,8 @@ function recibeInversionTotalCoinmarketPython() {
     cambioAeuros = moneda.crypto
     document.querySelector("#saldoEuros").value = cambioAeuros.toFixed(2)
 }
-async function eurosGastadosPython () {
+
+function eurosGastadosPython () {
 
     xhr.open("GET", `http://localhost:5000/api/v1/movimiento/operamos/euros`, true)
     xhr.onload = recibeEuroTotalPython
@@ -376,6 +377,7 @@ async function eurosGastadosPython () {
     console.log("He lanzado petición a Coin Market")
     
 }
+
 function recibeEuroTotalPython(){
 
     monedaEuro = JSON.parse(this.responseText)
@@ -383,6 +385,7 @@ function recibeEuroTotalPython(){
     document.querySelector("#gastado").value = eurosTotalesG.toFixed(2)
 
 }
+
 function escribeEurosTotales(cambioAeuros, eurosTotalesG){
 
     posiconActual = cambioAeuros - eurosTotalesG
@@ -399,9 +402,11 @@ window.onload = function() {
         .addEventListener("click", llamaApiCreaMovimiento)
 
         //llamada para realizar los calculos en Javascript
-        /* document.querySelector("#actualizar")
+        /*document.querySelector("#actualizar")
         .addEventListener("click", calculos)*/
         
+        //llamada para realizar los calculos en BBDD
         document.querySelector("#actualizar")
         .addEventListener("click", calculosPython)
 }
+    

@@ -1,11 +1,9 @@
 from flask import render_template, jsonify, request, Response
 from crypto_project import app
-from api_key_con_clase import CMC
-from crypto_project import dataaccess
+from crypto_project.api_key_con_clase import CMC
 from crypto_project.dataaccess import DBmanager
 import sqlite3
 from http import HTTPStatus
-import requests
 
 
 dbManager = DBmanager(app.config.get('DATABASE'))
@@ -24,6 +22,7 @@ def movimientosAPI():
         return jsonify({'status': 'success', 'crypto': lista})
     except sqlite3.Error as e:
         return jsonify({'status': 'fail', 'mensaje': str(e)})
+
 
 @app.route('/api/v1/movimiento/<int:id>', methods=['GET'])
 @app.route('/api/v1/movimiento', methods=['POST'])
@@ -80,7 +79,7 @@ def monedasInv(quantity, _from, _to):
         return jsonify({'status': 'fail', 'mensaje': str(e)})
 
 
-#intentando hacer los calcuos desde BBDD. --> lista con las monedas finales invertidas menos los EUR.
+#Cálcuos desde BBDD. --> JSON con las monedas finales invertidas menos los EUR.
 @app.route('/api/v1/movimiento/operamos')
 def calculos(quantity = None, _from =None):
 
@@ -108,11 +107,9 @@ def calculos(quantity = None, _from =None):
 
         x=0
         EurosTot = 0
-        #todoEuros= []
         for d in diccfi:
             x = diccfi[d]
             monedaEuros = cmc.eurosConversion(x, d)
-            #todoEuros.append(monedaEuros)
             EurosTot += monedaEuros
 
         return jsonify({'status': 'success', 'crypto': EurosTot})
@@ -120,6 +117,7 @@ def calculos(quantity = None, _from =None):
     except sqlite3.Error as e:
         return jsonify({'status': 'fail', 'mensaje': str(e)})
 
+#Cálcuos desde BBDD. --> JSON con calculo EUR final.
 @app.route('/api/v1/movimiento/operamos/euros')
 def calculosEuros():
 
