@@ -139,16 +139,24 @@ function calculaApiCoinMarket (ev) {
     console.log("He lanzado petición a Coin Market")
 }
 
-function recibeRespuestaCoinmarket() { // falta poner control de errores de la API?
-    
-    var variable = JSON.parse(this.responseText)
-    fe = Object.keys(variable.resultado.quote)[0] //le he pueste "fe" a la variable porque no sabia que poner
-    data = variable.resultado.quote[fe].price
-    precioUnitario = data / variable.resultado.amount
-    console.log(precioUnitario)
+function recibeRespuestaCoinmarket() {
 
-    document.querySelector("#precio").value = data.toFixed(8)
-    document.querySelector("#unitario").value = precioUnitario.toFixed(8)
+    if (this.readyState === 4 && (this.status ===200 || this.status === 201)) {
+        var variable = JSON.parse(this.responseText)
+        
+        if (variable.status !== 'success') {
+            alert("Se ha producido un error BBDD")
+            return
+        }
+
+        fe = Object.keys(variable.resultado.quote)[0] //le he pueste "fe" a la variable porque no sabia que poner
+        data = variable.resultado.quote[fe].price
+        precioUnitario = data / variable.resultado.amount
+        console.log(precioUnitario)
+
+        document.querySelector("#precio").value = data.toFixed(8)
+        document.querySelector("#unitario").value = precioUnitario.toFixed(8)
+    }
 }
 
 // validaciones antes de hacer el calculo de una moneda por otra
@@ -427,11 +435,13 @@ window.onload = function() {
         document.querySelector("#realizar")
         .addEventListener("click", llamaApiCreaMovimiento)
 
+    //Los calculos de la inversion actual se pueden hacer via Javascrip como Python. Actualmente esta activo Python.
+
         //llamada para realizar los calculos en Javascript
         /*document.querySelector("#actualizar")
         .addEventListener("click", calculos)*/
         
-        //llamada para realizar los calculos en BBDD
+        //llamada para realizar los calculos en BBDD con Python
         document.querySelector("#actualizar")
         .addEventListener("click", calculosPython)
 }
