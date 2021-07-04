@@ -153,7 +153,7 @@ function recibeRespuestaCoinmarket() { // falta poner control de errores de la A
 
 // validaciones antes de hacer el calculo de una moneda por otra
 function validaCalcular(movimiento) {
-    if (movimiento.from_moneda == "EUR" && movimiento.to_moneda =='EUR') {
+    if (movimiento.from_moneda == movimiento.to_moneda) {
         alert("Cambio no permitido")
         return false
     }
@@ -363,10 +363,18 @@ function cambioApiCoinMarketPython () {
 }
 
 function recibeInversionTotalCoinmarketPython() {
+    
+    if (this.readyState === 4 && (this.status ===200 || this.status === 201)) {
+        const moneda = JSON.parse(this.responseText)
+        
+        if (moneda.status !== 'success') {
+            alert("Se ha producido un error BBDD")
+            return
+        }
 
-    moneda = JSON.parse(this.responseText)
-    cambioAeuros = moneda.crypto
-    document.querySelector("#saldoEuros").value = cambioAeuros.toFixed(2)
+        cambioAeuros = moneda.crypto
+        document.querySelector("#saldoEuros").value = cambioAeuros.toFixed(2)
+    }
 }
 
 function eurosGastadosPython () {
@@ -380,16 +388,34 @@ function eurosGastadosPython () {
 
 function recibeEuroTotalPython(){
 
-    monedaEuro = JSON.parse(this.responseText)
-    eurosTotalesG = monedaEuro.crypto
-    document.querySelector("#gastado").value = eurosTotalesG.toFixed(2)
+    if (this.readyState === 4 && (this.status ===200 || this.status === 201)) {
+        const moneda = JSON.parse(this.responseText)
+        
+        if (moneda.status !== 'success') {
+            alert("Se ha producido un error BBDD")
+            return
+        }
 
+        monedaEuro = JSON.parse(this.responseText)
+        eurosTotalesG = monedaEuro.crypto
+        document.querySelector("#gastado").value = eurosTotalesG.toFixed(2)
+    }
 }
 
 function escribeEurosTotales(cambioAeuros, eurosTotalesG){
 
     posiconActual = cambioAeuros - eurosTotalesG
+
+    if (posiconActual<0){
+        document.querySelector("#posicionfinal").style.color = "#ff0000";
+    }
+    else if (posiconActual>0) {
+        document.querySelector("#posicionfinal").style.color = "#05840B";
+    }
+    
     document.querySelector("#posicionfinal").value = posiconActual.toFixed(2)
+
+
 }
 
 window.onload = function() {

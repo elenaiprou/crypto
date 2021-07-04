@@ -42,10 +42,13 @@ def detalleMovimiento(id=None):
                 return jsonify({"status": "fail", "mensaje": "movimiento no encontrado"}), HTTPStatus.NOT_FOUND
 
         if request.method == 'POST':
-            # if request.json['from_moneda'] != "EUR":
-            #     if dbManager.calculaSaldos(request.json['from_moneda'])< float(request.json['to_moneda']):
-            #         return jsonify({"status": "fail", "mensaje": "saldo insuficiente"}), HTTPStatus.OK
+            #if request.json['from_moneda'] != "EUR":
+                # a=dbManager.consultaMuchasSQL(request.json['from_cantidad'])
+                # b=float(request.json['to_cantidad'])    
+                # if a<b :
+                #     return jsonify({"status": "fail", "mensaje": "saldo insuficiente"}), HTTPStatus.OK
 
+            
             dbManager.modificaTablaSQL("""
                 INSERT INTO crypto
                     (fecha, from_moneda, from_cantidad, to_moneda, to_cantidad)
@@ -85,6 +88,7 @@ def calculos(quantity = None, _from =None):
 
     query2 = "SELECT SUM(from_cantidad), from_moneda FROM crypto GROUP BY from_moneda"
     query1 = "SELECT SUM(to_cantidad), to_moneda FROM crypto GROUP BY to_moneda"
+    
     try:
         lista1 = dbManager.calculaSaldos(query1)
         lista2 = dbManager.calculaSaldos(query2)
@@ -123,6 +127,7 @@ def calculosEuros():
 
     query2 = "SELECT SUM(from_cantidad), from_moneda FROM crypto GROUP BY from_moneda"
     query1 = "SELECT SUM(to_cantidad), to_moneda FROM crypto GROUP BY to_moneda"
+
     try:
         lista1 = dbManager.calculaSaldos(query1)
         lista2 = dbManager.calculaSaldos(query2)
@@ -136,6 +141,6 @@ def calculosEuros():
                 pass
 
         return jsonify({'status': 'success', 'crypto': saldoEuros})
-    
+
     except sqlite3.Error as e:
         return jsonify({'status': 'fail', 'mensaje': str(e)})
