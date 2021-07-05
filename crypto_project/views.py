@@ -42,20 +42,23 @@ def detalleMovimiento(id=None):
                 return jsonify({"status": "fail", "mensaje": "movimiento no encontrado"}), HTTPStatus.NOT_FOUND
 
         if request.method == 'POST':
-            #if request.json['from_moneda'] != "EUR":
-                # a=dbManager.consultaMuchasSQL(request.json['from_cantidad'])
-                # b=float(request.json['to_cantidad'])    
-                # if a<b :
-                #     return jsonify({"status": "fail", "mensaje": "saldo insuficiente"}), HTTPStatus.OK
+            if request.json['from_moneda'] != "EUR":
+                
+                query1 = "SELECT SUM(to_cantidad), to_moneda FROM crypto GROUP BY to_moneda"
+                lista1 = dbManager.calculaSaldos(query1)
+                
+                for t in lista1:
 
-            
-            dbManager.modificaTablaSQL("""
-                INSERT INTO crypto
-                    (fecha, from_moneda, from_cantidad, to_moneda, to_cantidad)
-                VALUES (:fecha, :from_moneda, :from_cantidad, :to_moneda, :to_cantidad)
-                """, request.json)
+                    if (t['to_moneda'] == request.json['from_moneda']) and (t['SUM(to_cantidad)'] <= float(request.json['from_cantidad'])):
+                        return jsonify({"status": "fail", "mensaje": "saldo insuficiente"}), HTTPStatus.OK
 
-            return jsonify({"status": "success", "mensaje": "registro creado"}), HTTPStatus.CREATED
+        dbManager.modificaTablaSQL("""
+            INSERT INTO crypto
+                (fecha, from_moneda, from_cantidad, to_moneda, to_cantidad)
+            VALUES (:fecha, :from_moneda, :from_cantidad, :to_moneda, :to_cantidad)
+            """, request.json)
+
+        return jsonify({"status": "success", "mensaje": "registro creado"}), HTTPStatus.CREATED
 
     except sqlite3.Error as e:
         print("BBDD error:", e)

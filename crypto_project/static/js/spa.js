@@ -27,7 +27,7 @@ function recibeRespuesta() {
         const respuesta = JSON.parse(this.responseText)
 
         if (respuesta.status != "success"){
-            alert("Se ha producido un error en acceso a servidor " + respuesta.mensaje)
+            alert("Se ha producido un error en acceso a servidor" + respuesta.mensaje)
             return
         }
 
@@ -201,7 +201,7 @@ function validaRealizar(movimiento) {
     monedasFinal = posicionMonedas(gastado, invertido)
     
     if (monedasFinal[movimiento.from_moneda] == 0) {
-        alert("Cambio no permitido")
+        alert("No tienes saldo suficiente")
         return false
     }
 

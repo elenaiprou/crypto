@@ -46,7 +46,6 @@ class CMC():
         
         return data
 
-
 cmc = CMC(app.config.get('API_KEY'))
 
 
