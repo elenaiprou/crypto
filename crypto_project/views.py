@@ -42,13 +42,15 @@ def detalleMovimiento(id=None):
                 return jsonify({"status": "fail", "mensaje": "movimiento no encontrado"}), HTTPStatus.NOT_FOUND
 
         if request.method == 'POST':
+
+            if (request.json['from_moneda'] == "" or request.json['to_moneda'] == ""):
+                return jsonify({"status": "fail", "mensaje": "Falta informar de las monedas"}), HTTPStatus.OK
+
+
             if request.json['from_moneda'] != "EUR":
                 
                 query1 = "SELECT SUM(to_cantidad), to_moneda FROM crypto GROUP BY to_moneda"
                 lista1 = dbManager.calculaSaldos(query1)
-
-                if not (request.json['from_moneda'] == lista1):
-                    return jsonify({"status": "fail", "mensaje": "saldo insuficiente"}), HTTPStatus.OK
 
                 for t in lista1:
                     if (t['to_moneda'] == request.json['from_moneda']) and (t['SUM(to_cantidad)'] <= float(request.json['from_cantidad'])):
@@ -137,13 +139,22 @@ def calculosEuros():
         lista1 = dbManager.calculaSaldos(query1)
         lista2 = dbManager.calculaSaldos(query2)
 
-        for t in lista1:
+        saldoEurosTo = 0
+        saldoEurosFrom = 0
+
+        for t in lista1: #creo que se puede simplificar este bucle porque lo he dividido en dos "for".
             if t['to_moneda'] == "EUR":
                 for f in lista2:
                     if t['to_moneda'] == f['from_moneda']:
-                        saldoEuros = f["SUM(from_cantidad)"] - t['SUM(to_cantidad)']
+                        saldoEurosTo =+ t['SUM(to_cantidad)']
             else:
                 pass
+        
+        for f in lista2:
+                    if f['from_moneda'] == "EUR":
+                        saldoEurosFrom =+ f["SUM(from_cantidad)"]
+
+        saldoEuros = saldoEurosFrom - saldoEurosTo
 
         return jsonify({'status': 'success', 'crypto': saldoEuros})
 

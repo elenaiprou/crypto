@@ -17,6 +17,10 @@
     background-color:beige;
 }
 
+#posicionfinal{
+    font-weight: bold;
+}
+
 h1{
     text-align: center;
     background-color: rgb(243, 243, 243);
@@ -48,7 +52,8 @@ tbody{
 
 #transaccion{
     float: left;
-    top: 50px;
+    top: 40px;
+    left: 50px;
 }
 
 /*

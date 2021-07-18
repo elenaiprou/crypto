@@ -58,77 +58,82 @@
                     </div>
                 </form>
             </section>
-        <div class="detail-movimiento container" id="transaccion">
-            <h3>Nueva transacción</h3>
-            <hr>
-            <form >
-                <div class="row">
-                    <div class="column column-33">
-                        <label for="from_moneda">De moneda</label>
-                        <select name="categoria" id="categoria">
-                            <option value="">Elije moneda</option>
-                            <option value="EUR">Euros</option>
-                            <option value="ETH">Ethereum</option>
-                            <option value="LTC">Litecoin</option>
-                            <option value="BNB">Binance Coin</option>
-                            <option value="EOS">EOS</option>
-                            <option value="XLM">Stellar</option>
-                            <option value="TRX">TRON</option>
-                            <option value="BTC">Bitcoin</option>
-                            <option value="XRP">XRP</option>
-                            <option value="BCH">Bitcoin Cash</option>
-                            <option value="USDT">Tether</option>
-                            <option value="BSV">Bitcoin SV</option>
-                            <option value="ADA">Cardano</option>
-                        </select>
-                    </div>
-                    <div class="column column-33">
-                        <label for="from_cantidad">Cantidad</label>
-                        <input type="number" name="cantidad" id="from_cantidad" step="any">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="column column-33">
-                        <label for="to_moneda">A moneda</label>
-                        <select name="categoria" id="cambio">
-                            <option value="">Elije moneda</option>
-                            <option value="EUR">Euros</option>
-                            <option value="ETH">Ethereum</option>
-                            <option value="LTC">Litecoin</option>
-                            <option value="BNB">Binance Coin</option>
-                            <option value="EOS">EOS</option>
-                            <option value="XLM">Stellar</option>
-                            <option value="TRX">TRON</option>
-                            <option value="BTC">Bitcoin</option>
-                            <option value="XRP">XRP</option>
-                            <option value="BCH">Bitcoin Cash</option>
-                            <option value="USDT">Tether</option>
-                            <option value="BSV">Bitcoin SV</option>
-                            <option value="ADA">Cardano</option>
-                        </select>
-                    </div>
-                    <div class="column column-33">
-                        <label for="to_cantidad">Cambio</label>
-                        <input type="number" name="precio" id="precio" step="any" readonly>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="column column-33">
-                        <label for="precio unitario"> Precio unitaro</label>
-                        <input type="number" name="unitario" id="unitario" step="any" readonly>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="column">
-                        <button id="calcular">Calcular</button>
-                        <button id="realizar">Realizar</button>
-                        <div>
-                            <a href="">Cancelar</a>
+            <section class="container" id="transaccion">
+                <h3>Nueva transacción</h3>
+                <hr>
+                <form id = "nuevaTransaccion">
+                    <div class="row">
+                        <div class="column column-33">
+                            <label for="from_moneda">De moneda</label>
+                            <select name="categoria" id="categoria">
+                                <option value="">Elije moneda</option>
+                                <option value="EUR">Euros</option>
+                                <option value="ETH">Ethereum</option>
+                                <option value="LTC">Litecoin</option>
+                                <option value="BNB">Binance Coin</option>
+                                <option value="EOS">EOS</option>
+                                <option value="XLM">Stellar</option>
+                                <option value="TRX">TRON</option>
+                                <option value="BTC">Bitcoin</option>
+                                <option value="XRP">XRP</option>
+                                <option value="BCH">Bitcoin Cash</option>
+                                <option value="USDT">Tether</option>
+                                <option value="BSV">Bitcoin SV</option>
+                                <option value="ADA">Cardano</option>
+                            </select>
+                        </div>
+                        <div class="column column-33">
+                            <label for="from_cantidad">Cantidad</label>
+                            <input type="number" name="cantidad" id="from_cantidad" step="any">
                         </div>
                     </div>
-                </div>
-            </form>
-            <footer>&copy 2021 - Todos los derechos reservados</footer>
-        </div>
+                    <div class="row">
+                        <div class="column column-33">
+                            <label for="to_moneda">A moneda</label>
+                            <select name="categoria" id="cambio">
+                                <option value="">Elije moneda</option>
+                                <option value="EUR">Euros</option>
+                                <option value="ETH">Ethereum</option>
+                                <option value="LTC">Litecoin</option>
+                                <option value="BNB">Binance Coin</option>
+                                <option value="EOS">EOS</option>
+                                <option value="XLM">Stellar</option>
+                                <option value="TRX">TRON</option>
+                                <option value="BTC">Bitcoin</option>
+                                <option value="XRP">XRP</option>
+                                <option value="BCH">Bitcoin Cash</option>
+                                <option value="USDT">Tether</option>
+                                <option value="BSV">Bitcoin SV</option>
+                                <option value="ADA">Cardano</option>
+                            </select>
+                        </div>
+                        <div class="column column-33">
+                            <label for="to_cantidad">Cambio</label>
+                            <input type="number" name="precio" id="precio" step="any" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="column column-33">
+                            <label for="precio unitario"> Precio unitaro</label>
+                            <input type="number" name="unitario" id="unitario" step="any" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="column">
+                            <button id="calcular">Calcular</button>
+                            <button id="realizar">Realizar</button>
+                            <div>
+                                <input type = "button" class="button button-outline" value = "Reset" onClick = "fun()"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <script>
+                    function fun(){  
+                    document.getElementById("nuevaTransaccion").reset();  
+                } 
+                </script>
+                <footer>&copy 2021 - Todos los derechos reservados</footer>
+            </section>
     </body>
 </html>

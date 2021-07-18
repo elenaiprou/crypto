@@ -27,7 +27,7 @@ function recibeRespuesta() {
         const respuesta = JSON.parse(this.responseText)
 
         if (respuesta.status != "success"){
-            alert("Se ha producido un error en acceso a servidor" + respuesta.mensaje)
+            alert("Se ha producido un error en acceso a servidor: " + respuesta.mensaje)
             return
         }
 
@@ -91,10 +91,13 @@ function muestraMovimientos() {
             fila.innerHTML = dentro
 
             tbody.appendChild(fila)
+
         }
     }
-    //calculos() 
+    //calculos() //llama a los calculos de javascript cuando entras a la pagina. 
 }
+
+
 
 function llamaApiMovimientos() {
     xhr.open('GET', `http://localhost:5000/api/v1/movimientos`, true)
@@ -143,7 +146,7 @@ function calculaApiCoinMarket (ev) {
 
 function recibeRespuestaCoinmarket() {
 
-    if (this.readyState === 4 && (this.status ===500)) {
+    if (this.readyState === 4 && (this.status ===500 || this.status === 503)) {
         alert("Se ha producido un error en el servidor")
         return}
 
@@ -163,6 +166,13 @@ function recibeRespuestaCoinmarket() {
         document.querySelector("#precio").value = data.toFixed(8)
         document.querySelector("#unitario").value = precioUnitario.toFixed(8)
     }
+}
+
+function limiparform(ev){
+    
+    if (document.getElementById("precio").value !=="")
+        document.getElementById("nuevaTransaccion").reset();
+
 }
 
 // validaciones antes de hacer el calculo de una moneda por otra
@@ -198,6 +208,10 @@ function llamaApiCreaMovimiento(ev) {
 function validaRealizar(movimiento) {
     
     if (movimiento.to_cantidad <= 0) {
+        alert("Operación no valida")
+        return false
+    }
+    if (movimiento.from_cantidad <= 0) {
         alert("Operación no valida")
         return false
     }
@@ -357,7 +371,6 @@ function escribeResultados(eurosInvertidos){
     document.querySelector("#posicionfinal").value = posiconActual.toFixed(2)
 }
 
-
 //Llamadas para Inversion actual desde Python
 function calculosPython(ev){
     ev.preventDefault()
@@ -378,7 +391,7 @@ function cambioApiCoinMarketPython () {
 
 function recibeInversionTotalCoinmarketPython() {
     
-    if (this.readyState === 4 && (this.status ===500)) {
+    if (this.readyState === 4 && (this.status ===500 || this.status === 503)) {
         alert("Se ha producido un error en el servidor")
         return}
 
@@ -405,9 +418,8 @@ function eurosGastadosPython () {
 }
 
 function recibeEuroTotalPython(){
-
-    if (this.readyState === 4 && (this.status ===500)) {
-        alert("Se ha producido un error en el servidor")
+    if (this.readyState === 4 && (this.status ===500 || this.status === 503)) {
+        alert("Error en servidor: calculos no correctos")
         return}
 
     else if (this.readyState === 4 && (this.status ===200 || this.status === 201)) {
@@ -425,24 +437,22 @@ function recibeEuroTotalPython(){
 }
 
 function escribeEurosTotales(cambioAeuros, eurosTotalesG){
-
+    
     posiconActual = cambioAeuros - eurosTotalesG
 
     if (posiconActual<0){
         document.querySelector("#posicionfinal").style.color = "#ff0000";
     }
     else if (posiconActual>0) {
-        document.querySelector("#posicionfinal").style.color = "#05840B";
+        document.querySelector("#posicionfinal").style.color = "#1CDE25";
     }
     
     document.querySelector("#posicionfinal").value = posiconActual.toFixed(2)
-
-
 }
 
 window.onload = function() {
     llamaApiMovimientos()
-    
+
         document.querySelector('#calcular')
         .addEventListener("click", calculaApiCoinMarket)
 
@@ -458,5 +468,9 @@ window.onload = function() {
         //llamada para realizar los calculos en BBDD con Python
         document.querySelector("#actualizar")
         .addEventListener("click", calculosPython)
+        
+        let elementsArray = document.querySelectorAll('#categoria, #from_cantidad, #cambio');
+        elementsArray.forEach(function(elem) {
+            elem.addEventListener("change", limiparform) 
+        });
 }
-    

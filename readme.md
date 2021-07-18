@@ -35,7 +35,7 @@ Crear una carpeta "data" fuera de la carpeta del proyecto. Donde guardaremos nue
 
     Para crear nuestra base de datos:
     
-    * Duplicar el fichero crypto_template.db y renombrar a crypto.db.
+    * Duplicar el fichero crypto_template.db y renombrar a crypto.db
     * Añadirlo en la carpeta data previamente creada. 
 
 
