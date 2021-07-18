@@ -133,17 +133,23 @@ function calculaApiCoinMarket (ev) {
     if (!validaCalcular(movimiento)) {
         return
     }
+
     xhr.open("GET", `http://localhost:5000/api/v1/par/${movimiento.from_cantidad}/${movimiento.from_moneda}/${movimiento.to_moneda}`, true)
     xhr.onload = recibeRespuestaCoinmarket 
     xhr.send()
     console.log("He lanzado petición a Coin Market")
+
 }
 
 function recibeRespuestaCoinmarket() {
 
-    if (this.readyState === 4 && (this.status ===200 || this.status === 201)) {
+    if (this.readyState === 4 && (this.status ===500)) {
+        alert("Se ha producido un error en el servidor")
+        return}
+
+    else if (this.readyState === 4 && (this.status ===200 || this.status === 201)) {
         var variable = JSON.parse(this.responseText)
-        
+    
         if (variable.status !== 'success') {
             alert("Se ha producido un error BBDD")
             return
@@ -372,7 +378,11 @@ function cambioApiCoinMarketPython () {
 
 function recibeInversionTotalCoinmarketPython() {
     
-    if (this.readyState === 4 && (this.status ===200 || this.status === 201)) {
+    if (this.readyState === 4 && (this.status ===500)) {
+        alert("Se ha producido un error en el servidor")
+        return}
+
+    else if (this.readyState === 4 && (this.status ===200 || this.status === 201)) {
         const moneda = JSON.parse(this.responseText)
         
         if (moneda.status !== 'success') {
@@ -396,7 +406,11 @@ function eurosGastadosPython () {
 
 function recibeEuroTotalPython(){
 
-    if (this.readyState === 4 && (this.status ===200 || this.status === 201)) {
+    if (this.readyState === 4 && (this.status ===500)) {
+        alert("Se ha producido un error en el servidor")
+        return}
+
+    else if (this.readyState === 4 && (this.status ===200 || this.status === 201)) {
         const moneda = JSON.parse(this.responseText)
         
         if (moneda.status !== 'success') {

@@ -46,9 +46,11 @@ def detalleMovimiento(id=None):
                 
                 query1 = "SELECT SUM(to_cantidad), to_moneda FROM crypto GROUP BY to_moneda"
                 lista1 = dbManager.calculaSaldos(query1)
-                
-                for t in lista1:
 
+                if not (request.json['from_moneda'] == lista1):
+                    return jsonify({"status": "fail", "mensaje": "saldo insuficiente"}), HTTPStatus.OK
+
+                for t in lista1:
                     if (t['to_moneda'] == request.json['from_moneda']) and (t['SUM(to_cantidad)'] <= float(request.json['from_cantidad'])):
                         return jsonify({"status": "fail", "mensaje": "saldo insuficiente"}), HTTPStatus.OK
 

@@ -31,9 +31,13 @@ Los valores deben ser:
 
 ## BBDD
 
-Crear una carpeta "data" dentro de la carpeta del proyecto. Donde guardaremos nuestra BBDD:
+Crear una carpeta "data" fuera de la carpeta del proyecto. Donde guardaremos nuestra BBDD:
 
-    crypto.db
+    Para crear nuestra base de datos:
+    
+    * Duplicar el fichero crypto_template.db y renombrar a crypto.db.
+    * Añadirlo en la carpeta data previamente creada. 
+
 
 ## Conexión con API CoinMarket
 
