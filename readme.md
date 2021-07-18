@@ -36,10 +36,15 @@ Los valores deben ser:
 
 Crear una carpeta "data" fuera de la carpeta crypto_projecr, mediante la consola. En esta carpeta es donde donde guardaremos nuestra BBDD. 
 Usando la consola:
+
     1. Entramos en la carpeta creada "data" -- cd data.
+
     2. Escribimos: sqlite3 crypto.db
+
     3. Escribir mandato: .read ../migrations/initial.sql
+
     4. Para comprobar que se ha creado la base de datos escribimos: .tables
+    
     5. Para salir de sqlite3 en la consola poner comando: .q
 
 
