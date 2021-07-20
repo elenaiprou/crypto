@@ -20,24 +20,25 @@
 
         pip install -r requirements.txt
 
-* Renombrar el fichero ".env_templat a .env
+* Renombrar el fichero ".env_templat" a ".env"
 
-* Renombrar el fichero confing_template.py a config.py
+* Renombrar el fichero "confing_template.py" a "config.py"
 
 ### BBDD
 
-Crear una carpeta "data" fuera de la carpeta crypto_projecr, mediante la consola. En esta carpeta es donde donde guardaremos nuestra BBDD. 
+Crear una carpeta "data" fuera de la carpeta crypto_project, mediante la consola. En esta carpeta es donde guardaremos nuestra BBDD. 
 Usando la consola:
 
     1. Entramos en la carpeta creada "data" -- cd data.
 
-    2. Escribimos: sqlite3 crypto.db
+    2. Escribimos: sqlite3 "nombre_de_la_BBDD.db" (ej: crypto.db)
 
     3. Escribir mandato: .read ../migrations/initial.sql
 
     4. Para comprobar que se ha creado la base de datos escribimos: .tables
     
     5. Para salir de sqlite3 en la consola poner comando: .q
+
 
 * En el fichero .env se han de colocar los siguientes valores:
 
