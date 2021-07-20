@@ -27,7 +27,7 @@
 
 * Renombrar el fichero "confing_template.py" a "config.py"
 
-### BBDD
+#### BBDD
 
 Crear una carpeta "data" fuera de la carpeta crypto_project, mediante la consola. En esta carpeta es donde guardaremos nuestra BBDD. 
 Usando la consola:
@@ -42,6 +42,7 @@ Usando la consola:
     
     5. Para salir de sqlite3 en la consola poner comando: .q
 
+Una ver creada la base de datos:
 
 * En el fichero .env se han de colocar los siguientes valores:
 
