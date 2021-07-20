@@ -42,7 +42,7 @@ Usando la consola:
     
     5. Para salir de sqlite3 en la consola poner comando: .q
 
-Una ver creada la base de datos:
+Una vez creada la base de datos:
 
 * En el fichero .env se han de colocar los siguientes valores:
 
@@ -54,16 +54,16 @@ Una ver creada la base de datos:
 
     DATABASE = 'ruta de la base de datos' -- poner la ruta de la base de datos y el nombre del archivo (ej: 'data/crypto.db')
     
-    API_KEY = 'contraseña api entre comillas' (instrucciones API CoinMarket)
+    API_KEY = 'contraseña api entre comillas' (ver apartado Conexión API CoinMarket)
 
-* Ejecutar Flask run
+* Ejecutar: Flask run
 
-* Abrir servidor http://localhost:5000/
+* Abrir servidor: http://localhost:5000/
 
 
-## Conexión con API CoinMarket
+## Conexión con API CoinMarketcap
 
-Darse de alta en la API CoinMarke: https://coinmarketcap.com/api/ para conseguir la api key siguiendo sus instrucciones.
+Darse de alta en la API CoinMarketcap: https://coinmarketcap.com/api/ para conseguir la api key siguiendo sus instrucciones.
 
 Generamos la conexion con CoinMarket mediante la clase CMC. Donde usamos headers para introducir la clave, esta clave se guarda en el archivo config.py en API_KEY. 
 
