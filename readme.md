@@ -3,12 +3,13 @@
 
 ## Instalaciones
 
-### Creación entorno virtual (windows)
+### Creación entorno virtual
 
 * python -m venv venv (el segundo nombre es el nombre de la carpeta del entorno virtual)
 
 * Activar entorno virtual 
-    mandato con windows: venv\Scripts\activate
+    mandato con Windows: venv\Scripts\activate
+    mandato con Mac: . venv/bin/activate
 
 ### Creación del proyecto (repositorio)
 
