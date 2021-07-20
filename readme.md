@@ -3,7 +3,16 @@
 
 ## Instalaciones
 
-* Nombre del proyecto: crypto_project
+### Creación entorno virtual (windows)
+
+* python -m venv venv (el segundo nombre es el nombre de la carpeta del entorno virtual)
+
+* Activar entorno virtual 
+    mandato con windows: venv\Scripts\activate
+
+### Creación del proyecto (repositorio)
+
+* Carpeta del proyecto (fuera de la carpeta venv): crypto_project
 
 * Trabajamos con la base de datos: sqlite3
 
@@ -13,26 +22,9 @@
 
 * Renombrar el fichero ".env_templat a .env
 
-Los valores deben ser:
-
-    FLASK_APP=run.py
-
-    FLASK_ENV=el que querais (ej: development)
-
 * Renombrar el fichero confing_template.py a config.py
 
-Los valores deben ser:
-
-    DATABASE = 'ruta de la base de datos' -- poner la ruta de la base de datos y el nombre del archivo (ej: 'data/crypto.db')
-    API_KEY = 'contraseña api'
-
-* Activar entorno virtual 
-    mandato con windows: venv\Scripts\activate
-
-* Ejecutar Flask run
-
-
-## BBDD
+### BBDD
 
 Crear una carpeta "data" fuera de la carpeta crypto_projecr, mediante la consola. En esta carpeta es donde donde guardaremos nuestra BBDD. 
 Usando la consola:
@@ -46,6 +38,22 @@ Usando la consola:
     4. Para comprobar que se ha creado la base de datos escribimos: .tables
     
     5. Para salir de sqlite3 en la consola poner comando: .q
+
+* En el fichero .env se han de colocar los siguientes valores:
+
+    FLASK_APP=run.py
+
+    FLASK_ENV=el que querais (ej: development)
+
+* En el fichero config.py los valores deben ser:
+
+    DATABASE = 'ruta de la base de datos' -- poner la ruta de la base de datos y el nombre del archivo (ej: 'data/crypto.db')
+    
+    API_KEY = 'contraseña api entre comillas' (instrucciones API CoinMarket)
+
+* Ejecutar Flask run
+
+* Abrir servidor http://localhost:5000/
 
 
 ## Conexión con API CoinMarket
