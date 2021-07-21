@@ -34,7 +34,7 @@ Usando la consola:
 
     1. Entramos en la carpeta creada "data" -- cd data.
 
-    2. Escribimos: sqlite3 "nombre_de_la_BBDD.db" (ej: crypto.db)
+    2. Escribimos: sqlite3 crypto.db
 
     3. Escribir mandato: .read ../migrations/initial.sql
 
