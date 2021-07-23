@@ -97,8 +97,6 @@ function muestraMovimientos() {
     //calculos() //llama a los calculos de javascript cuando entras a la pagina. 
 }
 
-
-
 function llamaApiMovimientos() {
     xhr.open('GET', `http://localhost:5000/api/v1/movimientos`, true)
     xhr.onload = muestraMovimientos
@@ -168,6 +166,7 @@ function recibeRespuestaCoinmarket() {
     }
 }
 
+//Elimina datos puestos despues de calcular si se modifica algún dato del form, para no falsear el cambio.
 function limiparform(ev){
     
     if (document.getElementById("precio").value !=="")
@@ -450,6 +449,11 @@ function escribeEurosTotales(cambioAeuros, eurosTotalesG){
     document.querySelector("#posicionfinal").value = posiconActual.toFixed(2)
 }
 
+//Función del boton Reset
+function funReset(){  
+    document.getElementById("nuevaTransaccion").reset();  
+} 
+
 window.onload = function() {
     llamaApiMovimientos()
 
@@ -473,4 +477,7 @@ window.onload = function() {
         elementsArray.forEach(function(elem) {
             elem.addEventListener("change", limiparform) 
         });
+
+        document.querySelector("#reset")
+        .addEventListener("click", funReset)
 }
